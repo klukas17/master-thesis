@@ -1,0 +1,334 @@
+\chapter{Optimization model}
+\label{sec:optimization_model}
+
+In this chapter, we will describe the framework which can be used to build modular optimization algorithms. While these concepts can be used for a broad range of problems, we will use them for scheduling in the following chapters. 
+
+\section{Components of optimization algorithms}
+\label{sec:components_of_optimization_algorithms}
+
+In this chapter, we will describe the components which can be used to build optimization algorithms. It is important to note that the goal of optimization is to solve problems. The premise that we are working with is that we want to solve a problem, and we are defining tools that we can use to solve it.
+
+\subsection{Genotype}
+\label{sec:genotype}
+
+The first component is the genotype for the problem. Genotype is a technical term for problem representation, and it entails data structures which store some information about the problem solution. If we define a genotype, then we are able to encode and represent solutions to the problem we are solving.
+
+It is important to note that the word genotype has a somewhat different connotation throughout literature from what we will use it here for. In literature, terms genotype and phenotype are defined and distinguished. Genotype refers to data structures which can be manipulated and which store information about a problem solution. Genotype can be mapped to an actual problem solution, which is called phenotype. Some representations have a clear distinction between genotype and phenotype, while in others they are the same.
+
+In the context of this thesis, the word genotype will be used as an umbrella term genotype, phenotype, and the optional mapping process from the former to the latter. This is because we will define operators which manipulate the genotype and that will be most interesting to us, while the phenotype mapping process will be implicit. The reasoning behind this decision is that the relation between genotype and phenotype depends only on the representation system, and we want to work on an abstract level, with operators that transform the data structures which contain an encoding for the problem solution.
+
+To recap, if we define a genotype for a problem, then we are able to represent and describe its solutions.
+
+\subsection{Evaluation function}
+\label{sec:evaluation_function}
+
+The next component is the evaluation function. This is a function which maps a genotype to a number. It is used to measure the quality of solutions. Since we will be solving minimization problems in this thesis, evaluation functions will be used to measure how bad of a solution a particular genotype is, and the goal will be to minimize this measure.
+
+If we can define an evaluation function for a problem, then we can compare two solutions and determine which one is better. In our case, the better solution will be the one with the lower evaluation function value.
+
+\subsection{Creation operator}
+\label{sec:creation_operator}
+
+The next component is the creation operator. This is an operator which creates a random genotype. It doesn't take any arguments, but it does require some metadata about the problem and its domain. For example, if we are solving a numerical optimization problem, then this metadata consists of the number of variables and the domain of each one. It can also have some parameters, it terms of numerical optimization this can be the distribution from which the points are sampled, but it is important that, once the operator is initialized and put in use, it shouldn't require any arguments to create a genotype.
+
+The creation operator should contain an element of randomness, as we want to construct different genotypes each time we apply it. The result can be completely random, or it can be constructed using a randomized heuristic. An example of an algorithm which uses heuristics to construct solutions is the GRASP algorithm \citep{grasp}.
+
+With the components we have defined, we are able to encode problem solutions, we can evaluate them, and we can randomly construct them. This is enough to create our first optimization algorithm, random search. One application of random search can be found in \citep{random_search}. The pseudocode for random search can be found in algorithm \ref{alg:random_search}.
+
+\begin{algorithm}[!htbp]
+    \caption{Random search}
+    \label{alg:random_search}
+    \KwIn{$evaluation\_function$, $creation\_operator$, $number\_of\_iterations$}
+    \KwOut{$(best\_solution, best\_score)$}
+
+    $x \gets NULL$\;
+    $s \gets \infty$\;
+    \For{$iter \gets 1$ \KwTo $number\_of\_iterations$}{
+        $x' \gets creation\_operator.create()$\;
+        $s' \gets evaluation\_function.evaluate(x)$\;
+        \If{$x' < s$}{
+            $(x, s) \gets (x'', s'')$\;
+        }
+    }
+    \Return $(x, s)$\;
+    \end{algorithm}
+    
+\subsection{Neighborhood operator}
+\label{sec:neighbood_operator}
+
+The next component is the neighborhood operator. This is an operator which takes as an argument a genotype, and returns a list of genotypes. These genotypes are considered neighbors of the original genotype, which means that they are close in the search space. Neighbors are constructed by applying changes to the argument genotype. The severity of these changes can impact the size of the resulting neighborhood.
+
+An algorithm which uses a neighborhood operator is the hill-climbing search \citep{artificial_intelligence}, whose pseudocode can be found in algorithm \ref{alg:hill_climbing_search}. This simple, greedy algorithm is often used as a local heuristic in other search algorithms.
+
+\begin{algorithm}[!htbp]
+    \caption{Hill-climbing search}
+    \label{alg:hill_climbing_search}
+    \KwIn{$evaluation\_function$, $creation\_operator$, $neighborhood\_operator$, $number\_of\_iterations$}
+    \KwOut{$(best\_solution, best\_score)$}
+
+    $x \gets creation\_operator.create()$\;
+    $s \gets evaluation\_function.evaluate(x)$\;
+
+    \For{$iter \gets 1$ \KwTo $number\_of\_iterations$}{
+        $x' \gets x$\;
+        $neighborhood \gets neighborhood\_operator.generate(x')$\;
+        \For{$x'' \in neighborhood$}{
+            $s'' \gets evaluation\_function.evaluate(x'')$\;
+            \If{$s'' < s$}{
+                $(x, s) \gets (x'', s'')$\;
+            }
+        }
+
+        \If{$x' = x$}{
+            $break$\;
+        }
+    }
+
+    \Return $(x, s)$\;
+    \end{algorithm}
+
+An advantage of separating the genotype definition from the genotype operators definition is that this framework allows building multiple operators of the same type for one genotype definition. An algorithm which utilizes multiple neighborhood operator definitions is the variable neighborhood search \citep{variable_neighborhood_search}, whose pseudocode can be found in algorithm \ref{alg:variable_neighborhood_search}. The \textit{local search algorithm} parameter can be any search heuristic, and a good candidate is the hill-climbing search.
+
+\begin{algorithm}[!htbp]
+    \caption{Variable neighborhood search}
+    \label{alg:variable_neighborhood_search}
+    \KwIn{$evaluation\_function$, $creation\_operator$, $neighborhood\_operators$, $local\_search\_algorithm$,  $number\_of\_iterations$}
+    \KwOut{$(best\_solution, best\_score)$}
+
+    $x \gets creation\_operator.create()$\;
+    $s \gets evaluation\_function.evaluate(x)$\;
+
+    \For{$iter \gets 1$ \KwTo $number\_of\_iterations$} {
+
+        $k \gets 0$\;
+        \While{$k < neighborhood\_operators.size()$}{
+            
+            $x' \gets neighborhood\_operators[k].generate(x).randomElement()$\;
+            $(x'', s'')$ $\gets$ $local\_search\_algorithm.search($ $evaluation\_function,$ \newline \hspace*{1em} $ neighborhood\_operator, x')$\;
+        
+            \If{$s'' < x$}{
+                $(x, s) \gets (x'', s'')$\;
+                $k \gets 0$\;
+            }  
+            \Else{
+                $k \gets k + 1$\;
+            }
+        }      
+    }
+
+    \Return $(x, s)$\;
+    \end{algorithm}
+
+\subsection{Perturbation operator}
+\label{sec:perturbation_operator}
+
+The next component is the perturbation operator. This operator takes a genotype as an argument, and returns one genotype as a result. It can be considered as a special case of a neighborhood operator where the length of the resulting neighborhood is always equal to one, these operators are distinguished for two reasons. The first reason is that the neighborhood operators are usually used in iterative search algorithms, while the perturbation operators are used in evolutionary algorithms, where the operator is more frequently called a mutation operator. The second reason is that the neighborhood operators are expected to apply less severe changes to the argument genotype than the perturbation operators. 
+
+The idea behind a perturbation operator is that takes a genotype and changes it more or less severely. These operators can be used to effectively escape local optima.
+
+One algorithm which uses a perturbation operator is the iterated local search \citep{iterated_local_search}, whose pseudocode can be found in algorithm \ref{alg:iterated_local_search}. 
+
+\begin{algorithm}[!htbp]
+    \caption{Iterated local search}
+    \label{alg:iterated_local_search}
+    \KwIn{$evaluation\_function$, $creation\_operator$, $neighborhood\_operator$, $perturbation\_operator$, $local\_search\_algorithm$,  $number\_of\_iterations$}
+    \KwOut{$(best\_solution, best\_score)$}
+
+    $x \gets creation\_operator.create()$\;
+    $s \gets evaluation\_function.evaluate(x)$\;
+
+    \For{$iter \gets 1$ \KwTo $number\_of\_iterations$} {
+        $x' \gets perturbation\_operator.perturbate(x)$\;
+        $(x'', s'')$ $\gets$ $local\_search\_algorithm.search($$evaluation\_function,$ \newline \hspace*{1em} $ neighborhood\_operator, x')$\;
+        \If{$s'' < s$}{
+            $(x, s) \gets (x'', s'')$\;
+        }
+    }
+
+    \Return $(x, s)$\;
+    \end{algorithm}
+
+\subsection{Combination operator}
+\label{sec:combinatino_operator}
+
+The final component is the combination operator. This operator takes two genotypes as arguments, and produces one genotype as a result. In evolutionary algorithms, these operators are more commonly called crossover operators. The idea behind them is that, if two genotypes have good genetic material, combining them has the potential to produce an even better genotype. We will see several examples of algorithms which utilize combination operators in chapter \ref{sec:optimization_algorithms}.
+
+\section{Optimization algorithms}
+\label{sec:optimization_algorithms}
+
+In this chapter, we will use the tools which we have defined to describe several optimization algorithms. It is here that we will see the biggest advantage of building optimization algorithms in a modular way. 
+
+To reiterate, the workflow of solving a problem is - define the problem, define the genotype for the problem, define the evaluation function and lastly, define the operators for the genotype. All of these become reusable components from one optimization algorithm to another. The only differences between these algorithms are which operators they require, how they choose solutions from the population, which operators they apply on them, and how they update the population at the end of each iteration. Not only are the problem-specific components reusable from one optimization algorithm to another, but the algorithms themselves can be used interchangeably on the same problem.
+
+For iterative algorithms, it is possible to define several stopping criteria. For this purpose, we will use the number of evaluations of the evaluation function, because this is the most expensive operations for the problems we will solve, and the overhead that the algorithm itself introduces is negligible compared to simulating and evaluating scheduling systems.
+
+\subsection{Steady-state genetic algorithm}
+\label{sec:ssga}
+
+The steady-state genetic algorithm (SSGA) \citep{ssga} is an algorithm which requires creation, combination and perturbation operators. At the start of the algorithm, the population is initialized using the creation operator. Every iteration consists of the following steps: uniformly choose two random parents, apply the combination operator on them to create their child, use the perturbation operator on the newly created child, evaluate the child, insert the child into the population, and remove the worst individual from the population to keep its size constant. The population is sorted by the individuals' score, and the final result is the best individual when the algorithm terminates.
+
+The size of the population is the only hyperparameter of the algorithm. The pseudocode for the algorithm can be found in algorithm \ref{alg:ssga}. The $initializePopulation$ function returns a sorted population of randomly created individuals. The $insertSorted$ function inserts an individual and its fitness into the population, and the $trim$ function removes excess individuals from the population to keep its size constant. These functions will be used throughout all of the metaheuristics.
+
+\begin{algorithm}[!htbp]
+    \caption{Steady-state genetic algorithm}
+    \label{alg:ssga}
+    \KwIn{$evaluation\_function$, $creation\_operator$, $combination\_operator$, $perturbation\_operator$, $population\_size$,  $number\_of\_iterations$}
+    \KwOut{$(best\_solution, best\_score)$}
+
+    $population = initializePopulation(creation\_operator, population\_size)$\;
+
+    \For{$iter \gets 1$ \KwTo $number\_of\_iterations$} {
+        $p_1 \gets population.randomElement()$\;
+        $p_2 \gets population.randomElement()$\;
+        $x \gets combination\_operator.combine(p_1, p_2)$\;
+        $x' \gets perturbation\_operator.perturbate(x)$\;
+        $s' \gets evaluation\_function.evaluate(x')$\;
+        $population.insertSorted((x', s'))$\;
+        $population.trim(population\_size)$\;
+    }
+
+    \Return $population.bestElement()$\;
+    \end{algorithm}
+
+\subsection{Generational genetic algorithm}
+\label{sec:gga}
+
+The generational genetic algorithm (GGA) \citep{gga} is an algorithm which uses the same operators and population initialization technique as SSGA. But while SSGA changes one element of the population per iteration, GGA changes the entire population. For selection, we will use the fitness-proportional selection, also known as the roulette-wheel selection. The idea is that individuals with higher fitness have a higher chance of being chosen as parents, and this mechanism creates a selection pressure and improves the algorithm's convergence.
+
+In roulette-wheel selection, each individual is assigned a coefficient relative to its fitness. The best individual has the coefficient $1$, while the coefficient for the worst individual is adjustable. For example, if this coefficient is $0.1$, that means that the best individual is $10$ times more likely to be chosen as a parent than the worst one. Coefficients for the remaining individuals are calculated using linear interpolation between the best and the worst individuals. A random number generator is used to sample a random number between zero and the sum of all coefficients, and binary search is used to find the individual that the sampled number corresponds to.
+
+Another important feature is elitism, which ensures that the algorithm never loses its best found solution. While SSGA has elitism by design, in GGA it is ensured by copying the best individual to the new population in each iteration.
+
+The hyperparameters of the algorithm are the population size and worst individual coefficient for the roulette-wheel selection. The pseudocode for the algorithm can be found in algorithm \ref{alg:gga}.
+
+\begin{algorithm}[!htbp]
+    \caption{Generation genetic algorithm}
+    \label{alg:gga}
+    \KwIn{$evaluation\_function$, $creation\_operator$, $combination\_operator$, $perturbation\_operator$, $population\_size$,  $worst\_individual\_coef$, $number\_of\_iterations$}
+    \KwOut{$(best\_solution, best\_score)$}
+
+    $population = initializePopulation(creation\_operator, population\_size)$\;
+
+    \For{$iter \gets 1$ \KwTo $number\_of\_iterations$} {
+        $new\_population \gets emptyList()$\;
+        $roulette\_wheel \gets createRouletteWheel(population)$\;
+
+        $new\_population.insert(population.at(0))$\;
+
+        \For{$i \gets 2$ \KwTo $population\_size$}{
+            $p_1 \gets roulette\_wheel.sampleElement()$\;
+            $p_2 \gets roulette\_wheel.sampleElement()$\;
+            $x \gets combination\_operator.combine(p_1, p_2)$\;
+            $x' \gets perturbation\_operator.perturbate(x)$\;
+            $s' \gets evaluation\_function.evaluate(x')$\;
+            $new\_population.insert((x', s'))$\;
+        }
+
+        $new\_population.sort()$\;
+        $population \gets new\_population$\;
+    }
+
+    \Return $population.bestElement()$\;
+    \end{algorithm}
+
+\subsection{Evolution strategy}
+\label{sec:es}
+Evolutionary strategies (EA) are a family of optimization algorithms closely related to genetic algorithms. An EA which we will use is similar to SSGA, and the difference is that it will create several new individuals per iteration, instead of one. In the context of EAs, this schema is known as the $(\mu + \lambda)$ schema, where the population size is $\mu$, the number of newly created individuals per iteration is $\lambda$, and the new population is selected from the combined pool of parents and newly created offspring. An alternative schema is $(\mu, \lambda)$, where the new population is selected only from offspring, and an EA which uses this schema is similar to GGA.
+
+Hyperparameters for the algorithm are population size and the percentage which indicates the proportion of new individuals generated in each iteration, relative to the population size. The pseudocode for the algorithm can be found in algorithm \ref{alg:ea}.
+
+\begin{algorithm}[!htbp]
+    \caption{Evolution strategy}
+    \label{alg:ea}
+    \KwIn{$evaluation\_function$, $creation\_operator$, $combination\_operator$, $perturbation\_operator$, $population\_size$, $new\_individuals\_per\_iteration\_percentage$, $number\_of\_iterations$}
+    \KwOut{$(best\_solution, best\_score)$}
+
+    $population = initializePopulation(creation\_operator, population\_size)$\;
+    $\lambda = population\_size \times new\_individuals\_per\_iteration\_percentage$\;
+
+    \For{$iter \gets 1$ \KwTo $number\_of\_iterations$} {
+        \For{$i \gets 1$ \KwTo $\lambda$}{
+            $p_1 \gets population.randomElement()$\;
+            $p_2 \gets population.randomElement()$\;
+            $x \gets combination\_operator.combine(p_1, p_2)$\;
+            $x' \gets perturbation\_operator.perturbate(x)$\;
+            $s' \gets evaluation\_function.evaluate(x')$\;
+            $population.insertSorted((x', s'))$\;
+        }
+        $population.trim(population\_size)$\;
+    }
+
+    \Return $population.bestElement()$\;
+    \end{algorithm}
+
+\subsection{Simple immunological algorithm}
+\label{sec:sia}
+
+Simple immunological algorithm (SIA) \citep{sia} is an optimization algorithm inspired by the immune system and its ability to recognize and eliminate pathogens. It requires creation and perturbation operators. In each iteration, every indivudal is cloned several times, and the perturbation operator is applied on every clone. The new population is constructed by choosing the best indivduals from the old population and the newly created clones.
+
+Hyperparameters for the algorithm are the population size and the number of clones per individual. The pseudocode for the algorithm can be found in algorithm \ref{alg:sia}.
+
+\begin{algorithm}[!htbp]
+    \caption{Simple immunological algorithm}
+    \label{alg:sia}
+    \KwIn{$evaluation\_function$, $creation\_operator$, $perturbation\_operator$, $population\_size$, $number\_of\_clones$, $number\_of\_iterations$}
+    \KwOut{$(best\_solution, best\_score)$}
+
+    $population = initializePopulation(creation\_operator, population\_size)$\;
+
+    \For{$iter \gets 1$ \KwTo $number\_of\_iterations$} {
+        \For{$i \gets 1$ \KwTo $number\_of\_clones$}{
+            $p \gets population.at(i)$\;
+            $x \gets p.copy()$\;
+            $x' \gets perturbation\_operator.perturbate(x)$\;
+            $s' \gets evaluation\_function.evaluate(x')$\;
+            $population.insertSorted((x', s'))$\;
+        }
+        $population.trim(population\_size)$\;
+    }
+
+    \Return $population.bestElement()$\;
+    \end{algorithm}
+
+\subsection{Clonal selection algorithm}
+\label{sec:clonalg}
+
+Clonal selection algorithm (CLONALG) \citep{clonalg} is another immunological algorithm. It uses the same operators and population initialization technique as SIA, but differs from it in two aspects. 
+
+The first difference between SIA and CLONALG is the selection process. In SIA, every individual is cloned the same number of times, and the new population is constructed from the old population and the clones. On the other hand, in CLONALG, better individuals are cloned more times, and the new population is constructed only from clones, so an elitism mechanism is required. The number of clones per individual is controlled by the parameter $\beta$. Every individual is cloned $\lceil \frac{\beta \times N}{i} \rceil$ times, where $N$ is the population size, and $i$ is the index of the individual in the sorted population. The mathematical function \textit{ceiling} is used to ensure that, however small the $\beta$ parameter is, enough clones will be created to construct a new population.
+
+The second difference between SIA and CLONALG is the perturbation strategy, which is called \textit{hypermutation strategy} in the context of immunological algorithms. In SIA, every clone is perturbated once. In CLONALG, a clone should be hypermutated inverse proprotionally to its fitness. While our framework allows building parametrized operators, for simplicity, all applications of operators will be atomic. To circumvent this limitation, a new hyperparameter $\gamma$ is introduced. Similarly to the selection schema, every clone is perturbated $\lceil \frac{\gamma \times i}{N} \rceil$, where $N$ and $i$ bear the same meaning. This will ensure that worse individuals are perturbated more aggressively, which is the original intent behind the hypermutation operator in CLONALG.
+
+The hyperparameters for the algorithm are population size, $\beta$ and $\gamma$. The pseudocode for the algorithm can be found in algorithm \ref{alg:clonalg}.
+
+\begin{algorithm}[!htbp]
+    \caption{Clonal selection algorithm}
+    \label{alg:clonalg}
+    \KwIn{$evaluation\_function$, $creation\_operator$, $perturbation\_operator$, $population\_size$, $\beta$, $\gamma$, $number\_of\_iterations$}
+    \KwOut{$(best\_solution, best\_score)$}
+
+    $population = initializePopulation(creation\_operator, population\_size)$\;
+
+    \For{$iter \gets 1$ \KwTo $number\_of\_iterations$} {
+
+        $new\_population \gets emptyList()$\;
+        $new\_population.insert(population.at(0))$\;
+
+        \For{$i \gets 1$ \KwTo $\lceil \frac{\beta \times N}{i} \rceil$}{
+            $p \gets population.at(i)$\;
+            $x \gets p.copy()$\;
+            \For{$number\_of\_perturbations \gets 1$ \KwTo $\lceil \frac{\gamma \times i}{N} \rceil$}{
+                $x \gets perturbation\_operator.perturbate(x)$\;
+            }
+            $x \gets perturbation\_operator.perturbate(x)$\;
+            $s \gets evaluation\_function.evaluate(x)$\;
+            $new\_population.insert((x, s))$\;
+        }
+
+        $new\_population.sort()$\;
+        $new\_population.trim(population\_size)$\;
+        $population \gets new\_population$\;
+    }
+
+    \Return $population.bestElement()$\;
+    \end{algorithm}

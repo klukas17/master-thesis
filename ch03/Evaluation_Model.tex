@@ -1,0 +1,53 @@
+\chapter{Evaluation model}
+\label{sec:evaluation_model}
+
+In this chapter, we will describe the third and the final component of the hierarchial topology representation, which is its evaluation model.
+
+\section{Evaluation data}
+\label{sec:evaluation_data}
+When the simulation is running, the simulator will occasionally update the data about jobs. The characteristics which are available to the objective function are the job's release time, due time and weight. When the processing for a job finished, the simulator will also update the exit time for a job. These four parameters are used in most of the objective functions.
+
+Another useful parameter which was not specified in the scheduling model, but which is natural for this representation is the job status upon simulation end. If the job reaches a sink node in its DAG, then it finishes processing normally, and the request was fulfilled. If the job does not reach a sink node in its DAG, but it still leaves the system, that means that a \textit{System exit forced} event was triggered, and that the request was not fulfilled. 
+
+The third option is that a job does not finish its processing, and instead remains stuck in come component's buffer. This can happen if the job is waiting for a prerequisite that cannot be fulfilled. In that case, all events will be consumed, and there will nothing left to change the job's state.
+
+To summarise, the five parameters for an objective function are the job's release time, due time, exit time, weight and status, which can be successfully terminated, unsuccessfully terminated and unterminated. All the objective functions use a combination of these parameters to produce a result for a job, and an aggregation of results for all jobs is used to produce the final score for the schedule.
+
+\section{Objective functions}
+\label{sec:objective_functions}
+
+The scheduling model described in \citep{pinedo2016scheduling} describes several objective functions. In this chapter, we will list several of these functions for the sake of completeness, and to show some common objective functions in scheduling problems. In other words, here we will describe how our evaluation model handles the $ \gamma $ entries from the scheduling problem definition.
+
+In this chapter and throughout this thesis, we will use the following notations for objective functions - for a job $j$, we will use $r_j$ to denote its release time, $d_j$ to denote its due time, $e_j$ to denote its exit time, $w_j$ to denote its weight, and $s_j$ to denote its status.
+
+Lateness of a job is defined as $L_j = e_j - d_j$. Since lateness can be negative, another metric is introduced, which is tardiness, defined as $T_j = max(L_j, 0)$. The unit penalty of a job is defined as $U_j = e_j > d_j$, and it can be zero or one. Earliness of a job is defined as $E_j = max(d_j - e_j, 0)$.
+
+The table \ref{tab:objective_functions_table} shows some objective functions, along with their formulas. All of these functions can be implemented using the data presented in chapter \ref{sec:evaluation_data}. This means that the evaluation model of the hierarchial topology representation fully covers the evaluation of the machines and jobs scheduling model.
+
+\begin{table}[!htbp]
+    \begin{center}
+        \begin{tabular}{|c|c|} 
+         \hline
+         Objective function & Formula \\ [0.5ex] 
+         \hline\hline
+         Makespan & $ max(e_1, e_2, ..., e_n) $ \\ 
+         \hline
+         Maximum lateness & $  max(L_1, L_2, ..., L_n) $ \\ 
+         \hline
+         Total weighed completion time & $ \sum_{j} w_j e_j $ \\ 
+         \hline
+         Discounted total weighted completion time, $ 0 < r < 1$ & $ \sum_{j} w_j (1 - e^{-r e_j}) $ \\ 
+         \hline
+         Total weighted tardiness & $ \sum_{j} w_j T_j $ \\ 
+         \hline
+         Weighter number of tardy jobs & $ \sum_{j} w_j U_j $ \\ 
+         \hline
+         Total earliness plus total tardiness & $ \sum_{j} E_j + \sum_{j} T_j $ \\ 
+         \hline
+        \end{tabular}
+        \end{center}
+        \caption{Examples of objective functions}
+    \label{tab:objective_functions_table}
+    \end{table}
+
+In chapter \ref{sec:scheduling}, we have defined scheduling problems using the triplet $\alpha | \beta | \gamma$. Over the past three chapters, we have introduced the hierarchial topology representation, and we have shown that this representation can express any scheduling problem which can be expressed by this triplet. This proves that it is a versatile and expressive representation system. The question that is left to answer is how this representation can be used to solve scheduling problems, and this question will be answered in the following chapters.

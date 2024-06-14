@@ -1,0 +1,14 @@
+\section{Heuristic optimization}
+\label{sec:heuristic_optimization}
+
+\subsection{Heuristics}
+\label{sec:heuristics}
+Heuristics are techniques based on experience used for solving a specific problem. They are expected to provide a satisfactory solution in a reasonable computation time, but they do not guarantee to find the optimal solution. They can be based on domain knowledge, and they can include criteria such as a rule of thumb, an educated guess, an intuitive judgement or common sense \citep{swamy2016search}.
+
+\subsection{Metaheuristics}
+\label{sec:metaheuristics}
+Metaheuristics are high-level heuristics that guide the design of problem-specific heuristics \citep{swamy2016search}. They are used to find, tune or select heuristics that may be used to find a solution to the problem. They can search over a large set of feasible solutions, and thus they can usually yield better results than just problem-specific heuristics. The two main types of metaheuristics are solution-based and population-based metaheuristics. The former operate on a single solution which is changed during the course of the algorithm, while the latter maintain a population of solutions from which the best one is chosen when the algorithm terminates.
+
+\subsection{Hyperheuristics}
+\label{sec:hyperheuristics}
+Hyperheuristics are heuristics used for searching the space of problem-specific heuristics \citep{Chakhlevitch2008}. Similar to metaheuristics, they also operate on a level above heuristics, but the difference is that metaheuristics search a space of solutions. A key characteristic of hyperheuristics is that they don't search for a good solution to the problem, instead, they search for a good method to solve the problem. In this thesis, we will use metaheuristics to search the space of problem-specific heuristics, which is an approach that the authors in \citep{Chakhlevitch2008} called metaheuristics-based hyperheuristics.

@@ -1,0 +1,88 @@
+\documentclass[times, utf8, zavrsni, numeric]{fer}
+\usepackage{booktabs}
+\usepackage{lipsum}
+\usepackage{float}
+\usepackage{pdfpages}
+\usepackage{graphicx} 
+\usepackage{hyperref}
+\usepackage{svg}
+\usepackage[linesnumbered,ruled,vlined]{algorithm2e}
+\graphicspath{ {./images/} }
+
+\def\labelitemi{$\cdot$}
+
+\begin{document}
+
+% TODO: broj rada
+\thesisnumber{0}
+
+\title{Optimization of Hyperheuristics for Online Scheduling Problems}
+
+\author{Mihael Miličević}
+
+\maketitle
+
+% TODO: dodati izvornik.pdf
+%\includepdf[]{izvornik.pdf}
+
+% TODO: dodati zahvalu
+%\zahvala{I would like to express my deepest gratitude to my mentor, prof. Jakobović, for his friendly and motivating mentorship, and his continued support, effort and help in writing this thesis. I would also like to thank my parents, for their support throughout my education.}
+
+\tableofcontents
+
+\chapter{Introduction}
+\label{sec:introduction}
+\input{ch01/Introduction.tex}
+
+\chapter{Theoretical background}
+\label{sec:theoretical_background}
+
+In this chapter, we will go over the theoretical background topics which are necessary to understand this thesis. These topics include mathematical optimization, heuristic optimization and scheduling theory.
+
+\input{ch02/Optimization.tex}
+\input{ch02/Heuristic_Optimization.tex}
+\input{ch02/Scheduling.tex}
+
+\input{ch03/Topology_Model.tex}
+\input{ch03/Events_Model.tex}
+\input{ch03/Evaluation_Model.tex}
+\input{ch03/Optimization_Model.tex}
+\input{ch03/Scheduling_Model.tex}
+
+\chapter{Experiments and results}
+\label{sec:experiments_and_results}
+\input{ch04/Experimental_Settings.tex}
+\input{ch04/Hyperparameter_Tuning.tex}
+\input{ch04/Experiments.tex}
+\input{ch04/Results.tex}
+
+\chapter{Conclusion}
+\label{sec:conclusion}
+\input{ch05/Conclusion.tex}
+
+\bibliography{literatura}
+\bibliographystyle{fer}
+
+\listoffigures
+
+\listoftables
+
+\listofalgorithms
+\addcontentsline{toc}{chapter}{List of Algorithms}
+
+\begin{sazetak}
+TODO
+
+\kljucnerijeci{}
+\end{sazetak}
+
+\newpage
+
+\engtitle{Optimizacija hiperheuristika za probleme raspoređivanja na zahtjev}
+\begin{abstract}
+TODO
+
+\keywords{}
+\end{abstract}
+
+\end{document}
