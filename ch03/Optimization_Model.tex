@@ -45,9 +45,9 @@ With the components we have defined, we are able to encode problem solutions, we
     $s \gets \infty$\;
     \For{$iter \gets 1$ \KwTo $number\_of\_iterations$}{
         $x' \gets creation\_operator.create()$\;
-        $s' \gets evaluation\_function.evaluate(x)$\;
-        \If{$x' < s$}{
-            $(x, s) \gets (x'', s'')$\;
+        $s' \gets evaluation\_function.evaluate(x')$\;
+        \If{$s' < s$}{
+            $(x, s) \gets (x', s')$\;
         }
     }
     \Return $(x, s)$\;
@@ -297,14 +297,16 @@ Clonal selection algorithm (CLONALG) \citep{clonalg} is another immunological al
 
 The first difference between SIA and CLONALG is the selection process. In SIA, every individual is cloned the same number of times, and the new population is constructed from the old population and the clones. On the other hand, in CLONALG, better individuals are cloned more times, and the new population is constructed only from clones, so an elitism mechanism is required. The number of clones per individual is controlled by the parameter $\beta$. Every individual is cloned $\lceil \frac{\beta \times N}{i} \rceil$ times, where $N$ is the population size, and $i$ is the index of the individual in the sorted population. The mathematical function \textit{ceiling} is used to ensure that, however small the $\beta$ parameter is, enough clones will be created to construct a new population.
 
-The second difference between SIA and CLONALG is the perturbation strategy, which is called \textit{hypermutation strategy} in the context of immunological algorithms. In SIA, every clone is perturbated once. In CLONALG, a clone should be hypermutated inverse proprotionally to its fitness. While our framework allows building parametrized operators, for simplicity, all applications of operators will be atomic. To circumvent this limitation, a new hyperparameter $\gamma$ is introduced. Similarly to the selection schema, every clone is perturbated $\lceil \frac{\gamma \times i}{N} \rceil$, where $N$ and $i$ bear the same meaning. This will ensure that worse individuals are perturbated more aggressively, which is the original intent behind the hypermutation operator in CLONALG.
+The second difference between SIA and CLONALG is the perturbation strategy, which is called \textit{hypermutation strategy} in the context of immunological algorithms. In SIA, every clone is perturbated once. In CLONALG, a clone should be hypermutated inverse proprotionally to its fitness. While our framework allows building parametrized operators, for simplicity, all applications of operators will be atomic. To circumvent this limitation, a new hyperparameter $\lambda$ is introduced. Similarly to the selection schema, every clone is perturbated $\lceil \frac{\lambda \times i}{N} \rceil$, where $N$ and $i$ bear the same meaning. This will ensure that worse individuals are perturbated more aggressively, which is the original intent behind the hypermutation operator in CLONALG.
 
-The hyperparameters for the algorithm are population size, $\beta$ and $\gamma$. The pseudocode for the algorithm can be found in algorithm \ref{alg:clonalg}.
+The third and final difference between SIA and CLONALG is that in each iteration of CLONALG, a certain number of random individuals are created and inserted into population, with the intent of adding fresh genetic material and thwarting stagnation of the search process. Parameter $\gamma$ is used to denote the proportion of new individuals randomly created in each iteration, relative to the population size.
+
+The hyperparameters for the algorithm are population size, $\beta$, $\gamma$ and $\lambda$. The pseudocode for the algorithm can be found in algorithm \ref{alg:clonalg}.
 
 \begin{algorithm}[!htbp]
     \caption{Clonal selection algorithm}
     \label{alg:clonalg}
-    \KwIn{$evaluation\_function$, $creation\_operator$, $perturbation\_operator$, $population\_size$, $\beta$, $\gamma$, $number\_of\_iterations$}
+    \KwIn{$evaluation\_function$, $creation\_operator$, $perturbation\_operator$, $population\_size$, $\beta$, $\gamma$, $\lambda$, $number\_of\_iterations$}
     \KwOut{$(best\_solution, best\_score)$}
 
     $population = initializePopulation(creation\_operator, population\_size)$\;
@@ -314,13 +316,19 @@ The hyperparameters for the algorithm are population size, $\beta$ and $\gamma$.
         $new\_population \gets emptyList()$\;
         $new\_population.insert(population.at(0))$\;
 
-        \For{$i \gets 1$ \KwTo $\lceil \frac{\beta \times N}{i} \rceil$}{
+        \For{$i \gets 1$ \KwTo $\lceil \frac{\beta \times population\_size}{i} \rceil$}{
             $p \gets population.at(i)$\;
             $x \gets p.copy()$\;
-            \For{$number\_of\_perturbations \gets 1$ \KwTo $\lceil \frac{\gamma \times i}{N} \rceil$}{
+            \For{$number\_of\_perturbations \gets 1$ \KwTo $\lceil \frac{\lambda \times i}{population\_size} \rceil$}{
                 $x \gets perturbation\_operator.perturbate(x)$\;
             }
             $x \gets perturbation\_operator.perturbate(x)$\;
+            $s \gets evaluation\_function.evaluate(x)$\;
+            $new\_population.insert((x, s))$\;
+        }
+
+        \For{$i \gets 1$ \KwTo $\lceil \gamma \times population\_size \rceil$}{
+            $x \gets creation\_operator.create()$\;
             $s \gets evaluation\_function.evaluate(x)$\;
             $new\_population.insert((x, s))$\;
         }

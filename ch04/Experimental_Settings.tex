@@ -1,1 +1,40 @@
+In this chapter, we will evaluate the online scheduling algorithms described in the chapter \ref{sec:online_scheduling_algorithms} across several problems. The idea here is not to over-optimize any algorithm for a particular problem. Instead, all the algorithms have relatively simple operators, and our goal is not to evaluate the performance of any of the algorithms individually. Instead, our goal is to test whether these algorithms can be utilized to for solving online scheduling problems.
+
 \section{Experimental settings}
+
+For each experiment, the job sequences for the train and test sets were generated randomly. Release times of job were generated using a Poisson process. Paths DAGs for jobs were also generated randomly. For serial and parallel groups, the group rules dictate the route through these components. For route and open groups, the number of components that the job needs to go through was generated using a geometric distribution, while the components themselves were chosen uniformly. Breakdowns were generated using a Poisson process. Prerequisites were generated using a geometric distribution, with special care taken that no deadlock could occur due to prerequisites, for example due to circular loops.
+
+Simulator features present in each experiment are shown in table \ref{tab:experiments_features}. The \textit{Experiment 0} was used for hyperparameter tuning, while the remaining experiments were used as case studies for evaluating online scheduling algorithms. 
+
+\begin{table}[!htbp]
+    \centering
+    \resizebox{\textwidth}{!}{
+        \begin{tabular}{|l|c|c|c|c|c|c|}
+        \hline
+            Experiment & Buffers & Prerequisites & Preemptions & Breakdowns & Setups & Batch processing \\ [0.5ex] 
+            \hline\hline
+            Experiment 0 &  &  &  &  &  &  \\ 
+            \hline
+            Experiment 1 &  &  & \checkmark & \checkmark &  &  \\ 
+            \hline
+            Experiment 2 &  &  & \checkmark &  &  & \checkmark \\ 
+            \hline
+            Experiment 3 & \checkmark & \checkmark &  &  &  &  \\ 
+            \hline
+            Experiment 4 &  &  &  &  & \checkmark & \checkmark \\ 
+            \hline
+            Experiment 5 &  &  & \checkmark &  & \checkmark &  \\ 
+            \hline
+        \end{tabular}
+    }
+    \caption{Simulator features in experiments}
+    \label{tab:experiments_features}
+\end{table}
+
+The objective function which was used for evaluating a scheduling system was:
+
+$$ \sum_{j} w_j (status == SUCCESSFULLY\_TERMINATED \; ? \; (1 - e^{-0.01 e_j}) : 5) $$
+
+This is the discounted total weighted completion time, with the addition that it adds a severe punishment for each job which was either stuck in the system due to unsatisfied prerequisites, or forcefully removed from the system.
+
+The baseline in every experiment was the \textit{Random programming} algorithm.

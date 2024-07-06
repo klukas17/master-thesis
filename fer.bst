@@ -556,7 +556,7 @@ FUNCTION {format.chapter.pages}
 { chapter empty$
     'format.pages
     { type empty$
-        { "poglavlje" }
+        { "chapter" }
         { type "l" change.case$ }
       if$
       chapter tie.or.space.connect
@@ -572,8 +572,8 @@ FUNCTION {format.in.ed.booktitle}
 { booktitle empty$
     { "" }
     { editor empty$
-        { "U " booktitle emphasize * }
-        { "U " format.editors * ", " * booktitle emphasize * }
+        { "In " booktitle emphasize * }
+        { "In " format.editors * ", " * booktitle emphasize * }
       if$
     }
   if$

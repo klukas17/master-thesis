@@ -25,7 +25,7 @@ There are a total of 22 event types, and they are all listed in Table \ref{tab:e
 
 \begin{table}[!htbp]
     \begin{center}
-        \begin{tabular}{|c|c|} 
+        \begin{tabular}{|l|l|} 
          \hline
          Event type & Priority \\ [0.5ex] 
          \hline\hline
@@ -78,8 +78,6 @@ There are a total of 22 event types, and they are all listed in Table \ref{tab:e
         \caption{Event types and their priorities}
     \label{tab:event_types}
     \end{table}
-    
-%When the system starts its execution, a priority queue is initialized with certain events. Each events has a timestamp, and they are ordered by it from lower to higher. If multiple events share the same timestamp, they are ordered by the priorities of their respective types. Ordering by timestamps ensures the temporal consistency of events happening across the system, while ordering by priority ensures their logical consistency.
 
 When the system starts its execution, a priority queue is initialized with certain events. At each step of the execution, the first event is popped from the queue and consumed. Consummation of an events entails changing the internal state of the simulator, and possibly the creation of new events. This loop continues until there are no more events to consume, at which point the execution is finished. 
 
@@ -189,6 +187,7 @@ Figure \ref{fig:interactions_between_events} shows all event types, and their in
 
 Looking at the diagram, it is apparent that the \textit{Wake machine} event is at the centre of the whole system, and that the effects that the other event types can have without it are only local, like a \textit{Machine entry} event triggering a \textit{Machine exit} event. For example, even the \textit{Machine entry batch} events are not triggered directly by the \textit{Machine entry} event as was described in chapter \ref{sec:event_types}, but instead, this interaction happens through the \textit{Wake machine} event. Otherwise, the system could very easily become unmantainable, with unpredictable interactions. It is easier and more reliable to guarantee logical consistency if all the non-trivial decision making is concentrated in one place, rather than dispersed across the system.
 
+[TODO: popraviti ovaj dijagram]
 \begin{figure}[!htbp]
 	\centering
 	\includegraphics[scale=0.5]{../images/events.png}
