@@ -1,11 +1,11 @@
 \chapter{Topology model}
 \label{sec:topology_model}
 
-In this chapter, we will describe the first component of the hierarchial topology representation, which is its topology model.
+In this chapter, we will describe the first component of the hierarchical topology representation, which is its topology model.
 
 \section{Topology building blocks}
 \label{sec:topology_building_blocks}
-The representation system proposed in this thesis is hierarchial. This means that the system of machines can be represented using a tree structure.
+The representation system proposed in this thesis is hierarchical. This means that the system of machines can be represented using a tree structure.
 
 The leaves in the tree are machines. Each machine has its buffer which contains jobs waiting for processing. Whenever the machine is free, a job is chosen from the buffer and put on the machine for processing.
 
@@ -21,18 +21,18 @@ The first group type is the serial group. The components of this group are order
 
 \begin{figure}[!htbp]
 	\centering
-	\includegraphics[scale=0.6]{../images/serial_group.png}
+	\includegraphics[scale=0.3]{../images/serial_group.png}
 	\caption{Serial group - topology and paths}
     \label{fig:serial_group}
 \end{figure}
 
 \subsection{Parallel group}
 
-The second group type is parallel group. This group performs a branching over its components. When a job enters this group, it is directed to one of its components, and the job will only be processed in that component. Figure \ref{fig:parallel_group} shows a paralell group topology on the left, and the corresponding paths DAG on the right. Paralell group nodes are named P.
+The second group type is parallel group. This group performs a branching over its components. When a job enters this group, it is directed to one of its components, and the job will only be processed in that component. Figure \ref{fig:parallel_group} shows a parallel group topology on the left, and the corresponding paths DAG on the right. Parallel group nodes are named P.
 
 \begin{figure}[!htbp]
 	\centering
-	\includegraphics[scale=0.6]{../images/parallel_group.png}
+	\includegraphics[scale=0.3]{../images/parallel_group.png}
 	\caption{Parallel group - topology and paths}
     \label{fig:parallel_group}
 \end{figure}
@@ -43,7 +43,7 @@ The third group type is route group. In this group, each job has a predefined ro
 
 \begin{figure}[!htbp]
 	\centering
-	\includegraphics[scale=0.6]{../images/route_group.png}
+	\includegraphics[scale=0.3]{../images/route_group.png}
 	\caption{Route group - topology and paths}
     \label{fig:route_group}
 \end{figure}
@@ -54,14 +54,14 @@ The fourth and the last group type is open group. In this group, each job contai
 
 \begin{figure}[!htbp]
 	\centering
-	\includegraphics[scale=0.6]{../images/open_group.png}
+	\includegraphics[scale=0.3]{../images/open_group.png}
 	\caption{Open group - topology and paths}
     \label{fig:open_group}
 \end{figure}
 
 \section{Machine environments}
 \label{sec:machine_environments}
-The scheduling model described in \citep{pinedo2016scheduling} defines several machine environments. Here, we will go over each one of them, and describe how they can be implemented using the hierarchial topology representation. In other words, here we will describe how our topology model handles $\alpha$ entries from the scheduling problem definition.
+The scheduling model described in \citep{pinedo2016scheduling} defines several machine environments. Here, we will go over each one of them, and describe how they can be implemented using the hierarchical topology representation. In other words, here we will describe how our topology model handles $\alpha$ entries from the scheduling problem definition.
 
 The first environment is $1$ (single machine). This can be very easily achieved using a topology that contains a single machine element.
 
@@ -73,7 +73,7 @@ The machine environment $FF_c$ (flexible flow shop) consists of $c$ stages in se
 
 \begin{figure}[!htbp]
 	\centering
-	\includegraphics[scale=0.6]{../images/flexible_flow_shop.png}
+	\includegraphics[scale=0.3]{../images/flexible_flow_shop.png}
 	\caption{Flexible flow shop - topology and paths}
     \label{fig:flexible_flow_shop}
 \end{figure}
@@ -84,11 +84,11 @@ The machine environment $FJ_c$ (flexible job shop) consists of $c$ stages, and e
 
 \begin{figure}[!htbp]
 	\centering
-	\includegraphics[scale=0.6]{../images/flexible_job_shop.png}
+	\includegraphics[scale=0.3]{../images/flexible_job_shop.png}
 	\caption{Flexible job shop - topology and paths}
     \label{fig:flexible_job_shop}
 \end{figure}
 
 Finally, the machine environment $O_m$ (open machines) consists of $m$ machines, where each job has to be processed on each machine, but there are no restrictions regarding the routing of the job, and it is up to the scheduler to determine a route for each job. This environment can be achieved using an open group topology element.
 
-As we have demonstrated, the hierarchial topology representation is a very versatile representation system. It is capable of implementing all the standard types of machine environments, but it can also implement environments which are much more complex, due to its capabilites being defined by recursive rules.
+As we have demonstrated, the hierarchical topology representation is a very versatile representation system. It is capable of implementing all the standard types of machine environments, but it can also implement environments which are much more complex, due to its capabilities being defined by recursive rules.

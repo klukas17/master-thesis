@@ -22,14 +22,14 @@ To recap, if we define a genotype for a problem, then we are able to represent a
 \subsection{Evaluation function}
 \label{sec:evaluation_function}
 
-The next component is the evaluation function. This is a function which maps a genotype to a number. It is used to measure the quality of solutions. Since we will be solving minimization problems in this thesis, evaluation functions will be used to measure how bad of a solution a particular genotype is, and the goal will be to minimize this measure.
+The next component is the evaluation function. This is a function which maps a genotype to a numeric value. It is used to measure the quality of solutions. Since we will be solving minimization problems in this thesis, evaluation functions will be used to measure how bad of a solution a particular genotype is, and the goal will be to minimize this measure.
 
 If we can define an evaluation function for a problem, then we can compare two solutions and determine which one is better. In our case, the better solution will be the one with the lower evaluation function value.
 
 \subsection{Creation operator}
 \label{sec:creation_operator}
 
-The next component is the creation operator. This is an operator which creates a random genotype. It doesn't take any arguments, but it does require some metadata about the problem and its domain. For example, if we are solving a numerical optimization problem, then this metadata consists of the number of variables and the domain of each one. It can also have some parameters, it terms of numerical optimization this can be the distribution from which the points are sampled, but it is important that, once the operator is initialized and put in use, it shouldn't require any arguments to create a genotype.
+The next component is the creation operator. This is an operator which creates a random genotype. It does not take any arguments, but it does require some metadata about the problem and its domain. For example, if we are solving a numerical optimization problem, then this metadata consists of the number of variables and the domain of each one. It can also have some parameters, in terms of numerical optimization this can be the distribution from which the points are sampled, but it is important to note that, once the operator is initialized and put in use, it should not require any arguments to create a genotype.
 
 The creation operator should contain an element of randomness, as we want to construct different genotypes each time we apply it. The result can be completely random, or it can be constructed using a randomized heuristic. An example of an algorithm which uses heuristics to construct solutions is the GRASP algorithm \citep{grasp}.
 
@@ -106,7 +106,7 @@ An advantage of separating the genotype definition from the genotype operators d
             $x' \gets neighborhood\_operators[k].generate(x).randomElement()$\;
             $(x'', s'')$ $\gets$ $local\_search\_algorithm.search($ $evaluation\_function,$ \newline \hspace*{1em} $ neighborhood\_operator, x')$\;
         
-            \If{$s'' < x$}{
+            \If{$s'' < s$}{
                 $(x, s) \gets (x'', s'')$\;
                 $k \gets 0$\;
             }  
@@ -160,7 +160,7 @@ In this chapter, we will use the tools which we have defined to describe several
 
 To reiterate, the workflow of solving a problem is - define the problem, define the genotype for the problem, define the evaluation function and lastly, define the operators for the genotype. All of these become reusable components from one optimization algorithm to another. The only differences between these algorithms are which operators they require, how they choose solutions from the population, which operators they apply on them, and how they update the population at the end of each iteration. Not only are the problem-specific components reusable from one optimization algorithm to another, but the algorithms themselves can be used interchangeably on the same problem.
 
-For iterative algorithms, it is possible to define several stopping criteria. For this purpose, we will use the number of evaluations of the evaluation function, because this is the most expensive operations for the problems we will solve, and the overhead that the algorithm itself introduces is negligible compared to simulating and evaluating scheduling systems.
+For iterative algorithms, it is possible to define several stopping criteria. For this purpose, we will use the number of evaluations of the evaluation function, because this is the most expensive operation for the problems we will solve, and the overhead that the algorithm itself introduces is negligible compared to simulating and evaluating scheduling systems.
 
 \subsection{Steady-state genetic algorithm}
 \label{sec:ssga}
@@ -175,7 +175,7 @@ The size of the population is the only hyperparameter of the algorithm. The pseu
     \KwIn{$evaluation\_function$, $creation\_operator$, $combination\_operator$, $perturbation\_operator$, $population\_size$,  $number\_of\_iterations$}
     \KwOut{$(best\_solution, best\_score)$}
 
-    $population = initializePopulation(creation\_operator, population\_size)$\;
+    $population \gets initializePopulation(creation\_operator, population\_size)$\;
 
     \For{$iter \gets 1$ \KwTo $number\_of\_iterations$} {
         $p_1 \gets population.randomElement()$\;
@@ -195,7 +195,9 @@ The size of the population is the only hyperparameter of the algorithm. The pseu
 
 The generational genetic algorithm (GGA) \citep{gga} is an algorithm which uses the same operators and population initialization technique as SSGA. But while SSGA changes one element of the population per iteration, GGA changes the entire population. For selection, we will use the fitness-proportional selection, also known as the roulette-wheel selection. The idea is that individuals with higher fitness have a higher chance of being chosen as parents, and this mechanism creates a selection pressure and improves the algorithm's convergence.
 
-In roulette-wheel selection, each individual is assigned a coefficient relative to its fitness. The best individual has the coefficient $1$, while the coefficient for the worst individual is adjustable. For example, if this coefficient is $0.1$, that means that the best individual is $10$ times more likely to be chosen as a parent than the worst one. Coefficients for the remaining individuals are calculated using linear interpolation between the best and the worst individuals. A random number generator is used to sample a random number between zero and the sum of all coefficients, and binary search is used to find the individual that the sampled number corresponds to.
+In roulette-wheel selection, each individual is assigned a coefficient relative to its fitness. The best individual has the coefficient $1$, while the coefficient for the worst individual is adjustable. For example, if this coefficient is $0.1$, that means that the best individual is $10$ times more likely to be chosen as a parent than the worst one. This coefficient is used to control the selection pressure, and the higher it is, the greater the selection pressure. Coefficients for the remaining individuals are calculated using linear interpolation between the best and the worst individuals. A random number generator is used to sample a random number between zero and the sum of all coefficients, and binary search is used to find the individual that the sampled number corresponds to. 
+
+Roulette-wheel selection can be used in SSGA as well, instead of the random selection. A downside of that approach is that the construction of the roulette-wheel is an expensive operation with the complexity of $O(n)$, where $n$ is the population size. In SSGA, each iteration has the complexity of $O(1)$ in regards to $n$, so the construction of a roulette-wheel for selection would drastically increase the complexity of the algorithm. On the other hand, in GGA, each iteration already has the complexity of $O(n)$ in regards to $n$, so the extra step of constructing a roulette-wheel is negligible.
 
 Another important feature is elitism, which ensures that the algorithm never loses its best found solution. While SSGA has elitism by design, in GGA it is ensured by copying the best individual to the new population in each iteration.
 
@@ -207,11 +209,11 @@ The hyperparameters of the algorithm are the population size and worst individua
     \KwIn{$evaluation\_function$, $creation\_operator$, $combination\_operator$, $perturbation\_operator$, $population\_size$,  $worst\_individual\_coef$, $number\_of\_iterations$}
     \KwOut{$(best\_solution, best\_score)$}
 
-    $population = initializePopulation(creation\_operator, population\_size)$\;
+    $population \gets initializePopulation(creation\_operator, population\_size)$\;
 
     \For{$iter \gets 1$ \KwTo $number\_of\_iterations$} {
         $new\_population \gets emptyList()$\;
-        $roulette\_wheel \gets createRouletteWheel(population)$\;
+        $roulette\_wheel \gets createRouletteWheel(worst\_individual\_coef, $ \newline \hspace*{1em} $ population)$\;
 
         $new\_population.insert(population.at(0))$\;
 
@@ -235,7 +237,7 @@ The hyperparameters of the algorithm are the population size and worst individua
 \label{sec:es}
 Evolutionary strategies (EA) are a family of optimization algorithms closely related to genetic algorithms. An EA which we will use is similar to SSGA, and the difference is that it will create several new individuals per iteration, instead of one. In the context of EAs, this schema is known as the $(\mu + \lambda)$ schema, where the population size is $\mu$, the number of newly created individuals per iteration is $\lambda$, and the new population is selected from the combined pool of parents and newly created offspring. An alternative schema is $(\mu, \lambda)$, where the new population is selected only from offspring, and an EA which uses this schema is similar to GGA.
 
-Hyperparameters for the algorithm are population size and the percentage which indicates the proportion of new individuals generated in each iteration, relative to the population size. The pseudocode for the algorithm can be found in algorithm \ref{alg:ea}.
+Hyperparameters for the algorithm are the population size and the percentage which indicates the proportion of new individuals generated in each iteration, relative to the population size. The pseudocode for the algorithm can be found in algorithm \ref{alg:ea}.
 
 \begin{algorithm}[!htbp]
     \caption{Evolution strategy}
@@ -243,8 +245,8 @@ Hyperparameters for the algorithm are population size and the percentage which i
     \KwIn{$evaluation\_function$, $creation\_operator$, $combination\_operator$, $perturbation\_operator$, $population\_size$, $new\_individuals\_per\_iteration\_percentage$, $number\_of\_iterations$}
     \KwOut{$(best\_solution, best\_score)$}
 
-    $population = initializePopulation(creation\_operator, population\_size)$\;
-    $\lambda = population\_size \times new\_individuals\_per\_iteration\_percentage$\;
+    $population \gets initializePopulation(creation\_operator, population\_size)$\;
+    $\lambda \gets population\_size \times new\_individuals\_per\_iteration\_percentage$\;
 
     \For{$iter \gets 1$ \KwTo $number\_of\_iterations$} {
         \For{$i \gets 1$ \KwTo $\lambda$}{
@@ -274,7 +276,7 @@ Hyperparameters for the algorithm are the population size and the number of clon
     \KwIn{$evaluation\_function$, $creation\_operator$, $perturbation\_operator$, $population\_size$, $number\_of\_clones$, $number\_of\_iterations$}
     \KwOut{$(best\_solution, best\_score)$}
 
-    $population = initializePopulation(creation\_operator, population\_size)$\;
+    $population \gets initializePopulation(creation\_operator, population\_size)$\;
 
     \For{$iter \gets 1$ \KwTo $number\_of\_iterations$} {
         \For{$i \gets 1$ \KwTo $number\_of\_clones$}{
@@ -293,7 +295,7 @@ Hyperparameters for the algorithm are the population size and the number of clon
 \subsection{Clonal selection algorithm}
 \label{sec:clonalg}
 
-Clonal selection algorithm (CLONALG) \citep{clonalg} is another immunological algorithm. It uses the same operators and population initialization technique as SIA, but differs from it in two aspects. 
+Clonal selection algorithm (CLONALG) \citep{clonalg} is another immunological algorithm. It uses the same operators and population initialization technique as SIA, but differs from it in several aspects. 
 
 The first difference between SIA and CLONALG is the selection process. In SIA, every individual is cloned the same number of times, and the new population is constructed from the old population and the clones. On the other hand, in CLONALG, better individuals are cloned more times, and the new population is constructed only from clones, so an elitism mechanism is required. The number of clones per individual is controlled by the parameter $\beta$. Every individual is cloned $\lceil \frac{\beta \times N}{i} \rceil$ times, where $N$ is the population size, and $i$ is the index of the individual in the sorted population. The mathematical function \textit{ceiling} is used to ensure that, however small the $\beta$ parameter is, enough clones will be created to construct a new population.
 
@@ -301,7 +303,7 @@ The second difference between SIA and CLONALG is the perturbation strategy, whic
 
 The third and final difference between SIA and CLONALG is that in each iteration of CLONALG, a certain number of random individuals are created and inserted into population, with the intent of adding fresh genetic material and thwarting stagnation of the search process. Parameter $\gamma$ is used to denote the proportion of new individuals randomly created in each iteration, relative to the population size.
 
-The hyperparameters for the algorithm are population size, $\beta$, $\gamma$ and $\lambda$. The pseudocode for the algorithm can be found in algorithm \ref{alg:clonalg}.
+The hyperparameters for the algorithm are the population size, $\beta$, $\gamma$ and $\lambda$. The pseudocode for the algorithm can be found in algorithm \ref{alg:clonalg}.
 
 \begin{algorithm}[!htbp]
     \caption{Clonal selection algorithm}
@@ -309,7 +311,7 @@ The hyperparameters for the algorithm are population size, $\beta$, $\gamma$ and
     \KwIn{$evaluation\_function$, $creation\_operator$, $perturbation\_operator$, $population\_size$, $\beta$, $\gamma$, $\lambda$, $number\_of\_iterations$}
     \KwOut{$(best\_solution, best\_score)$}
 
-    $population = initializePopulation(creation\_operator, population\_size)$\;
+    $population \gets initializePopulation(creation\_operator, population\_size)$\;
 
     \For{$iter \gets 1$ \KwTo $number\_of\_iterations$} {
 

@@ -344,33 +344,56 @@ The results of the t-test are shown in the table \ref{tab:experiment5_stat}. All
 
 \section{Analysis of the results}
 
-The results of the experiments were rather satisfying. On every experiment, every algorithm outperformed the baseline. This holds an even greater weight when we consider that these algorithms worked with vastly different hyperparameters. This indicates that all the concepts presented in this thesis work together fairly well, and that it is possible to use the hierarchial topology representation to solve online scheduling problems.
+The results of the experiments were rather satisfying. On every experiment, every algorithm outperformed the baseline. This holds an even greater weight when we consider that these algorithms worked with vastly different hyperparameters. This indicates that all the concepts presented in this thesis work together fairly well, and that it is possible to use the hierarchical topology representation to solve online scheduling problems.
 
-Another important thing to note is that, across five experiments, we were able to solve problems with completely different machine topologies and behaviors. We were able to use a single system to solve five different problems, without the need to develop anything specific for any of them. This proves that the hierarchial topology representation is immensely versatile in regards to the types of problems it can be used to solve.
+Another important thing to note is that, across five experiments, we were able to solve problems with completely different machine topologies and behaviors. We were able to use a single system to solve five different problems, without the need to develop anything specific for any of them. This proves that the hierarchical topology representation is immensely versatile in regards to the types of problems it can be used to solve.
 
 \section{Examples of generated heuristics}
 
-In this chapter, we will show the best solution across all runs in the fourth experiment, which was achieved using TBGP. To recap, the second experiment utilized setups and batch processing, so we can expect features related to these behaviors to be present in the genotype.
+In this chapter, we will show the best solution across all runs in the fourth experiment, which was achieved using TBGP. To recap, the fourth experiment utilized setups and batch processing, so we can expect features related to these behaviors to be present in the genotype.
 
-The symbolic expression for $O_1$ was:
-[TODO]
+The symbolic expressions, represented as a tree where the child nodes of a node are indented with one space more than the parent node, are shown in the following figures - $O_1$ in figure \ref{fig:heuristic_01}, $M_1$ in figure \ref{fig:heuristic_02}, $M_2$ in figure \ref{fig:heuristic_03}, $M_3$ in figure \ref{fig:heuristic_04}, $M_4$ in figure \ref{fig:heuristic_05} and $M_5$ in figure \ref{fig:heuristic_06}.
 
-The symbolic expression for $M_1$ was:
-[TODO]
+Interestingly, the results show that the batch processing features were heavily utilized in online scheduling algorithms for machines, while the setup features were not utilized. This may be due to the fact that setup times did not vary between jobs, so the algorithm could not discriminate jobs by these features.
 
-The symbolic expression for $M_2$ was:
-[TODO]
+\begin{figure}[!htbp]
+	\centering
+	\includegraphics[scale=0.7]{../images/heuristic_01.png}
+	\caption{Generated heuristics - experiment 4, $O_1$}
+    \label{fig:heuristic_01}
+\end{figure}
 
-The symbolic expression for $M_3$ was:
-\begin{gather*}
-    time / combined\_weights_\_of\_batch\_compatible\_jobs - weight - \\
-    (combined\_weights_\_of\_batch\_compatible\_jobs - batch\_processing\_limit)
-\end{gather*}
+\begin{figure}[!htbp]
+	\centering
+	\includegraphics[scale=0.7]{../images/heuristic_02.png}
+	\caption{Generated heuristics - experiment 4, $M_1$}
+    \label{fig:heuristic_02}
+\end{figure}
 
-The symbolic expression for $M_4$ was:
-[TODO]
+\begin{figure}[!htbp]
+	\centering
+	\includegraphics[scale=0.7]{../images/heuristic_03.png}
+	\caption{Generated heuristics - experiment 4, $M_2$}
+    \label{fig:heuristic_03}
+\end{figure}
 
-The symbolic expression for $M_5$ was:
-\begin{gather*}
-    sqrt(sqrt(time >= 0\,?\,weight\,:\,-0.614886))
-\end{gather*}
+\begin{figure}[!htbp]
+	\centering
+	\includegraphics[scale=0.7]{../images/heuristic_04.png}
+	\caption{Generated heuristics - experiment 4, $M_3$}
+    \label{fig:heuristic_04}
+\end{figure}
+
+\begin{figure}[!htbp]
+	\centering
+	\includegraphics[scale=0.7]{../images/heuristic_05.png}
+	\caption{Generated heuristics - experiment 4, $M_4$}
+    \label{fig:heuristic_05}
+\end{figure}
+
+\begin{figure}[!htbp]
+	\centering
+	\includegraphics[scale=0.7]{../images/heuristic_06.png}
+	\caption{Generated heuristics - experiment 4, $M_5$}
+    \label{fig:heuristic_06}
+\end{figure}

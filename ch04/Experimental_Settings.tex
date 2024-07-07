@@ -33,8 +33,8 @@ Simulator features present in each experiment are shown in table \ref{tab:experi
 
 The objective function which was used for evaluating a scheduling system was:
 
-$$ \sum_{j} w_j (status == SUCCESSFULLY\_TERMINATED \; ? \; (1 - e^{-0.01 e_j}) : 5) $$
+$$ \sum_{j} w_j (status_j == SUCCESSFULLY\_TERMINATED \; ? \; (1 - e^{-0.01 (e_j - r_j)}) : 5) $$
 
-This is the discounted total weighted completion time, with the addition that it adds a severe punishment for each job which was either stuck in the system due to unsatisfied prerequisites, or forcefully removed from the system.
+This is a derivation of the discounted total weighted completion time, with the difference that it replaces the term $e_j$ with $e_j - r_j$ in the exponent, and the addition that it adds a severe punishment for each job which was either stuck in the system due to unsatisfied prerequisites, or forcefully removed from the system.
 
 The baseline in every experiment was the \textit{Random programming} algorithm.

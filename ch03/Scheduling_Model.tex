@@ -1,23 +1,23 @@
 \chapter{Offline scheduling model}
 \label{sec:offline_scheduling_model}
 
-In this chapter, we will describe how the hierarchial topology representation can be used for solving offline scheduling problems. In offline scheduling, all information about jobs is known in advance, so the information about the exact weight, release and due times of all jobs is available to the scheduler.
+In this chapter, we will describe how the hierarchical topology representation can be used for solving offline scheduling problems. In offline scheduling, all information about jobs is known in advance, so the information about the exact weight, release and due times of all jobs is available to the scheduler.
 
 \section{Motivational example for offline scheduling}
 \label{sec:offline_scheduling_motivational_example}
 
-We will start with a motivational example. Figure \ref{fig:offline_scheduling_topology} shows the topology for this example, and figure \ref{fig:offline_scheduling_jobs} shows the jobs paths DAGs for three jobs which need to be processed in the system. In this figure, every paths DAG node is assigned a number, which we will call \textit{step identificator}. The motivation behind introducing the \textit{step identificator} is that the information \textit{(job identificator, machine identificator)} can be ambiguous, because jobs can be processed on the same machines multiple times. Instead, a concept of a processing step is introduced, which corresponds to a single instance of processing a job on a machine, and each node in the job's paths DAG is equivalent to one step.
+We will start with a motivational example. Figure \ref{fig:offline_scheduling_topology} shows the topology for this example, and figure \ref{fig:offline_scheduling_jobs} shows the jobs paths DAGs for three jobs which need to be processed in the system. In this figure, every paths DAG node is assigned a number, which we will call \textit{step identifier}. The motivation behind introducing the \textit{step identifier} is that the information \textit{(job identifier, machine identifier)} can be ambiguous, because jobs can be processed on the same machines multiple times. Instead, a concept of a processing step is introduced, which corresponds to a single instance of processing a job on a machine, and each node in the job's paths DAG is equivalent to one step.
 
 \begin{figure}[!htbp]
 	\centering
-	\includegraphics[scale=0.6]{../images/offline_scheduling_topology.png}
+	\includegraphics[scale=0.3]{../images/offline_scheduling_topology.png}
 	\caption{Offline scheduling motivational example - topology}
     \label{fig:offline_scheduling_topology}
 \end{figure}
 
 \begin{figure}[!htbp]
 	\centering
-	\includegraphics[scale=0.6]{../images/offline_scheduling_jobs.png}
+	\includegraphics[scale=0.3]{../images/offline_scheduling_jobs.png}
 	\caption{Offline scheduling motivational example - jobs paths DAGs}
     \label{fig:offline_scheduling_jobs}
 \end{figure}
@@ -31,7 +31,7 @@ Firstly, we know the basic information about jobs - release time, due time, weig
 
 Secondly, we know all the possible paths that each job can take through the system. We can gather this information from the job's paths DAG. In practice, this DAG would be constructed from the job's processing requirements and restrictions.
 
-In a hierarchial topology, scheduling happens on two levels. The first one is determining a job's processing route, and the second one is determining the order in which the jobs are processed on machines.
+In a hierarchical topology, scheduling happens on two levels. The first one is determining a job's processing route, and the second one is determining the order in which the jobs are processed on machines.
 
 \subsection{Offline scheduling genotype - processing routes}
 
@@ -41,7 +41,7 @@ For the parallel group, which has of several components, and each job has to go 
 
 \begin{figure}[!htbp]
 	\centering
-	\includegraphics[scale=0.6]{../images/offline_scheduling_genotype_parallel.png}
+	\includegraphics[scale=0.3]{../images/offline_scheduling_genotype_parallel.png}
 	\caption{Offline scheduling example - genotype for parallel groups}
     \label{fig:offline_scheduling_genotype_parallel}
 \end{figure}
@@ -50,7 +50,7 @@ For the open group, which also has of several components, and each job has some 
 
 \begin{figure}[!htbp]
 	\centering
-	\includegraphics[scale=0.6]{../images/offline_scheduling_genotype_open.png}
+	\includegraphics[scale=0.3]{../images/offline_scheduling_genotype_open.png}
 	\caption{Offline scheduling example - genotype for open groups}
     \label{fig:offline_scheduling_genotype_open}
 \end{figure}
@@ -61,14 +61,14 @@ Next, we will focus on the second level of scheduling, which is determining the 
 
 \begin{figure}[!htbp]
 	\centering
-	\includegraphics[scale=0.6]{../images/offline_scheduling_genotype_machine.png}
+	\includegraphics[scale=0.3]{../images/offline_scheduling_genotype_machine.png}
 	\caption{Offline scheduling example - genotype for machines}
     \label{fig:offline_scheduling_genotype_machine}
 \end{figure}
 
 \subsection{Offline scheduling genotype - passive components}
 
-These three components build an offline schedule genotype. An important note to make is that the genotype can contain passive components, by which we mean that they do not impact the scheduler and its decisions. 
+The three components described in previous chapters build an offline schedule genotype. An important note to make is that the genotype can contain passive components, by which we mean that they do not impact the scheduler and its decisions. 
 
 One way that this can happen is if the topology contains parallel groups. All branches of these groups are covered by the genotype, but only one will be relevant for each job that goes through the parallel group. If a passive branch of a parallel group node contains an open group, then the order of its component nodes in the genotype will be irrelevant, until the branch becomes active by changing the parallel group node in the genotype. 
 
@@ -81,7 +81,7 @@ In chapter \ref{sec:offline_scheduling_genotype_components}, we have presented t
 
 \subsection{Offline scheduling genotype - evaluation function}
 \label{sec:offline_scheduling_genotype_evaluation_function}
-The evaluation model for the hierarchial topology representation was explained in chapter \ref{sec:evaluation_model}. To reiterate, the processing of a job sequence is simulated, and the simulation yields some data about each job. Then, an objective function is calculated using the job data, and the result represents the schedule score. This exactly is the evaluation function for the offline scheduling genotype - run a simulation, collect results, pass them to an objective function and calculate the schedule score. The two parameters of an evaluation function are the job sequence and the objective function, and changing them produces different evaluation functions.
+The evaluation model for the hierarchical topology representation was explained in chapter \ref{sec:evaluation_model}. To reiterate, the processing of a job sequence is simulated, and the simulation yields some data about each job. Then, an objective function is calculated using the job data, and the result represents the schedule score. This exactly is the evaluation function for the offline scheduling genotype - run a simulation, collect results, pass them to an objective function and calculate the schedule score. The two parameters of an evaluation function are the job sequence and the objective function, and changing them produces different evaluation functions.
 
 \subsection{Offline scheduling genotype - creation operator}
 The genotype for offline scheduling consists of three components, as described in chapter \ref{sec:offline_scheduling_genotype_components}. All genotype operators manipulate all of these components. Before the optimization, paths DAGs of all jobs are analyzed, to collect information about all possible scheduling decisions that could be made. For each machine, a list of all processing steps which could be executed on it is compiled. For parallel and open groups, all path nodes are compiled.
@@ -129,7 +129,7 @@ For combination operators, the components which are open to change are construct
 
 We can now describe the algorithm which we will use to do optimization for both offline and online scheduling. The algorithm is called \textit{scheduling meta-algorithm}, and its pseudocode can be found in algorithm \ref{alg:sma}.
 
-The algorithm has two evaluation functions. The first function contains the sequence of jobs used for training, and the second function contains the sequence used for testing. This is analogous to the concepts of \textit{train sets} and \textit{test sets} in machine learning.
+The algorithm has two evaluation functions. The first function contains the sequence of jobs used for training, and the second function contains the sequence used for testing. This is analogous to the concepts of \textit{train sets} and \textit{test sets} in machine learning. These functions differ in online scheduling problems, and in offline scheduling problems they are identical.
 
 In the inner loop of the algorithm, an optimization algorithm searches the solution space for a good solution, evaluating the solutions on the train set. Any algorithm described in chapter \ref{sec:optimization_algorithms} can be used as the inner optimization algorithm.
 
@@ -149,7 +149,7 @@ It is important to note that the population of solutions is transferred from one
 
     \For{$iter \gets 1$ \KwTo $number\_of\_iterations$} {
 
-        $machines\_partition = topology\_partitioner.getPartition()$\;
+        $machines\_partition \gets topology\_partitioner.getPartition()$\;
         $(x', \_)$ $\gets$ $inner\_algorithm.optimize($$evaluation\_function\_train,$ \newline \hspace*{1em} $creation\_operator$, $combination\_operator$,  $perturbation\_operator,$\newline \hspace*{1em}$ machines\_partition, population)$\;
         $s' \gets evaluation\_function\_test.evaluate(x')$\;
         \If{$s' < s$}{
@@ -175,7 +175,7 @@ For each student, we need to choose one of five available slots. This can be rep
 
 \begin{figure}[!htbp]
 	\centering
-	\includegraphics[scale=0.6]{../images/case_study_lab.png}
+	\includegraphics[scale=0.3]{../images/case_study_lab.png}
 	\caption{Scheduling university laboratory exercises - topology and paths}
     \label{fig:case_study_lab}
 \end{figure}
@@ -199,7 +199,7 @@ In this case study, we have described, on a high level, how to use the offline s
 
 \section{Comparison with offline scheduling}
 
-In this chapter, we will describe how the hierarchial topology representation can be used for solving online scheduling problems. In online scheduling, the information about jobs, such as their count and properties, is not known in advance. Instead, as the jobs enter the system, the scheduler dynamically moves them across the system.
+In this chapter, we will describe how the hierarchical topology representation can be used for solving online scheduling problems. In online scheduling, the information about jobs, such as their count and properties, is not known in advance. Instead, as the jobs enter the system, the scheduler dynamically moves them across the system.
 
 \section{Online scheduling genotype components}
 \label{sec:online_scheduling_genotype_components}
@@ -227,7 +227,7 @@ In chapter \ref{sec:online_scheduling_genotype_components}, we presented compone
 
 \subsection{Processing routes features}
 
-For paralell and open groups, where the regression algorithm needs to evaluate how good a component of the group is for the job, the features that the algorithm can use are the following:
+For parallel and open groups, where the regression algorithm needs to evaluate how good a component of the group is for the job, the features that the algorithm can use are the following:
 \begin{itemize}
     \item time (timestamp at which the job is processed on the group)
     \item job's release time
@@ -251,7 +251,7 @@ For machines, where the regression algorithm needs to evaluate how important a j
 	\item combined weights of all the jobs that the job is batch compatible with (can be processed in batch with)
 	\item number of batch compatible jobs for the job
 	\item batch processing limit (maximum number of jobs per batch) for the machine type and job type pairing
-	\item setup length of the job for the machine, relative to the job which was previously processed on the machine
+	\item setup length of the job for the machine, dependent on the job which was previously processed on the machine
 	\item time until the machine's next breakdown
 	\item whether preemptions are allowed for the machine type and job type pairing
 \end{itemize}
@@ -282,18 +282,18 @@ The online scheduling algorithm cluster is the genotype for an online scheduling
 The evaluation function for an online scheduling algorithm cluster is the same as the evaluation function for the offline scheduling genotype, described in the chapter \ref{sec:offline_scheduling_genotype_evaluation_function}. The steps are - simulate the processing of a job sequence in the system, produce some data about each job, and aggregate this data to a single value using an objective function.
 
 \subsection{Online scheduling algorithm cluster - creation operator}
-The creation operator for an online scheduling algorithm cluster involves creating an online scheduling algorithm for each topology element that requires scheduling. This involves calling the creation operator for the online scheduling algorithm once per select topology elements.
+The creation operator for an online scheduling algorithm cluster involves creating an online scheduling algorithm for each topology element that requires scheduling. This involves executing the creation operator for the online scheduling algorithm once per select topology elements.
 
 \subsection{Online scheduling algorithm cluster - combination operator}
-The combination operator for an online scheduling algorithm cluster involves calling the combination operator of the online scheduling algorithm once per topology elements unlocked by the topology partitioner, and for the topology elements which are locked by the topology partitioner, the approach which was described in chapter \ref{sec:topology_partitioning} is used, with the distinction of coarse and fine granularity combination operators.
+The combination operator for an online scheduling algorithm cluster involves executing the combination operator of the online scheduling algorithm once per topology elements unlocked by the topology partitioner, and for the topology elements which are locked by the topology partitioner, the approach which was described in chapter \ref{sec:topology_partitioning} is used, with the distinction of coarse and fine granularity combination operators.
 
 \subsection{Online scheduling algorithm cluster - perturbation operator}
-The perturbation perturbation operator for an online scheduling algorithm cluster involves calling the perturbation operator of the online scheduling algorithm once per topology elements unlocked by the topology partitioners, while the remaining elements are left intact.
+The perturbation perturbation operator for an online scheduling algorithm cluster involves executing the perturbation operator of the online scheduling algorithm once per topology elements unlocked by the topology partitioners, while the remaining elements are left intact.
 
 \section{Online scheduling algorithms}
 \label{sec:online_scheduling_algorithms}
 
-In this chapter, we will describe the online scheduling algorithms which can make up an online scheduling algorithm cluster. An online scheduling algorithm is a genotype for solving a regression problem. In chapter \ref{sec:online_scheduling_algorithm_cluster}, we described the operators for an online scheduling algorithm cluster. The majority of these operators assume that the online scheduling algorithms have the operators of the same type defined. Based on this information, we can conclude that each online scheduling algorithm needs to have creation, combination and perturbation operators defined. Furthermore, each online scheduling algorithm needs to be able to map a set of numeric features to a number, and in this way solve a regression problem.
+In this chapter, we will describe the online scheduling algorithms which can make up an online scheduling algorithm cluster. An online scheduling algorithm is a genotype for solving a regression problem. In chapter \ref{sec:online_scheduling_algorithm_cluster}, we described the operators for an online scheduling algorithm cluster. The majority of these operators assume that the online scheduling algorithms have the operators of the same type defined. Based on this information, we can conclude that each online scheduling algorithm needs to have creation, combination and perturbation operators defined. Furthermore, each online scheduling algorithm needs to be able to map a set of numeric features to a numeric value, and in this way solve a regression problem.
 
 \subsection{Random programming}
 
@@ -400,7 +400,7 @@ Hyperparameters for LGP are the number of instructions, number of registers, reg
 
 Multi expression programming (MEP) \citep{mep} encodes several symbol expressions, where expressions are built using the previous expressions, and any one of them can be used as the solution for the problem. To adapt this algorithm to be usable for online scheduling, we will always use the last expression as the result for the regression problem. An illustration of MEP is shown in figure \ref{fig:mep}.
 
-The creation operator creates a random program. The combination operator is the one-point crossover. The perturbation operator randmoly selects some expressions and changes their arguments or function. The regression algorithm evaluates all expressions and uses the last one as the result.
+The creation operator creates a random program. The combination operator is the one-point crossover. The perturbation operator randomly selects some expressions and changes their arguments or function. The regression algorithm evaluates all expressions and uses the last one as the result.
 
 Hyperparameters for MEP are the number of instructions and the perturbation rate.
 
@@ -413,9 +413,11 @@ Hyperparameters for MEP are the number of instructions and the perturbation rate
 
 \subsection{Gene expression programming}
 
-Gene expression programming (GEP) \citep{gep} has distinct representations for its genotype and phenotype. The genotype is a linear string of elements, which can be either function symbols, parameters or constants. The phenotype is constructed by using the genotype to build the expression tree, level by level. The genotype consists of two parts, head and tail. The head can contain function symbols, while the tail cannot. The length of the head is a hyperparameter of the algorithm, and the length of the tail is calculated from the head's length. This ensures that the resulting expression is always valid and complete. And illustration of GEP is shown in figure \ref{fig:gep}.
+Gene expression programming (GEP) \citep{gep} has distinct representations for its genotype and phenotype. The consideration whether an algorithm has distinct or unified representations for genotype and phenotype can be ambiguous. In TBGP, the result of the algorithm is calculated by directly evaluating the genotype tree. In CGP and GBGP, the result of the algorithm is also calculated from the genotype, although this process is more complicated and involves methods such as dynamic programming. In contrast, in some algorithms, the result is not calculated from the genotype. Instead, an additional step of mapping the genotype data structures to different data structures, which belong to the phenotype, is required. Then, the result of the algorithm is calculated from the phenotype. If an algorithm posseses this property, we will consider that it has distinct representations for genotype and phenotype.
 
-The creation operator creates a random genotype string. The combination operator is the one-point crossover. The perturbation operator randomly selects some genotype elements and changes them, and also randomly performs transposition, which selects a segment of the genotype, and moves it to a different position within the genotype. The regression algorithm build the phenotype tree from the genotype, and then evaluates the expression encoded in the tree.
+In GEP, the genotype is a linear string of elements, which can be either function symbols, parameters or constants. The phenotype is constructed by using the genotype to build the expression tree, level by level. The genotype consists of two parts, head and tail. The head can contain function symbols, while the tail cannot. The length of the head is a hyperparameter of the algorithm, and the length of the tail is calculated from the head's length. This ensures that the resulting expression is always valid and complete. And illustration of GEP is shown in figure \ref{fig:gep}.
+
+The creation operator creates a random genotype string. The combination operator is the one-point crossover. The perturbation operator randomly selects some genotype elements and changes them, and also randomly performs transposition, which selects a segment of the genotype, and moves it to a different position within the genotype. The regression algorithm builds the phenotype tree from the genotype, and then evaluates the expression encoded in the tree.
 
 Hyperparameters for GEP are the head size, the chance of generating a parameter in the tail (as opposed to a constant), perturbation rate, chance of transposition happening in perturbation, and the maximum length of the segment in the transposition.
 
@@ -445,7 +447,7 @@ Hyperparameters for GE are the codon count, the maximum number of wrappings, and
 
 Structured grammatical evolution (SGE) \citep{sge} is an algorithm inspired by the GE. It solves the problem of the mapping from genotype to phenotype possibly failing, by limiting the depth of the tree. For each nonterminal symbol in the grammar, it keeps a linear string of codons, whose length is equal to the maximum number of times that a symbol could appear in any tree, with the given maximum depth. An illustration of SGE is shown in figure \ref{fig:sge}. The maximum depth here is three, and the source of the recursion in the grammar is the $symbol$ node being mapped to a combination of $nonterminal$ nodes and an operator. In this case, after this transformation is applied three times in any path from the root of the tree to its leaves, the $symbol$ node will always be mapped to the $terminal$ node, thus ending the recursion.
 
-The creation operator creates random genotype strings, one for each nonterminal symbol. The combination operator follows this procedure for each nonterminal symbol - choose a random parent, and copy its genotype for the nonterminal symbol to the child. The perturbation operator randomly selects some codons and changes their values. The regression algorithm build the phenotype tree from the genotype, and then evaluates it as an expression.
+The creation operator creates random genotype strings, one for each nonterminal symbol. The combination operator follows this procedure for each nonterminal symbol - choose a random parent, and copy its genotype for the nonterminal symbol to the child. The perturbation operator randomly selects some codons and changes their values. The regression algorithm builds the phenotype tree from the genotype, and then evaluates it as an expression.
 
 Hyperparameters for SGE are the maximum depth and the perturbation rate.
 

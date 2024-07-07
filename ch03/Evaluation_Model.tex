@@ -1,7 +1,7 @@
 \chapter{Evaluation model}
 \label{sec:evaluation_model}
 
-In this chapter, we will describe the third and the final component of the hierarchial topology representation, which is its evaluation model.
+In this chapter, we will describe the third and the final component of the hierarchical topology representation, which is its evaluation model.
 
 \section{Evaluation data}
 \label{sec:evaluation_data}
@@ -11,7 +11,7 @@ Another useful parameter which was not specified in the scheduling model, but wh
 
 The third option is that a job does not finish its processing, and instead remains stuck in come component's buffer. This can happen if the job is waiting for a prerequisite that cannot be fulfilled. In that case, all events will be consumed, and there will nothing left to change the job's state.
 
-To summarise, the five parameters for an objective function are the job's release time, due time, exit time, weight and status, which can be successfully terminated, unsuccessfully terminated and unterminated. All the objective functions use a combination of these parameters to produce a result for a job, and an aggregation of results for all jobs is used to produce the final score for the schedule.
+To summarize, the five parameters for an objective function are the job's release time, due time, exit time, weight and status, which can be successfully terminated, unsuccessfully terminated and unterminated. All the objective functions use a combination of these parameters to produce a result for a job, and an aggregation of results for all jobs is used to produce the final score for the schedule.
 
 \section{Objective functions}
 \label{sec:objective_functions}
@@ -22,7 +22,7 @@ In this chapter and throughout this thesis, we will use the following notations 
 
 Lateness of a job is defined as $L_j = e_j - d_j$. Since lateness can be negative, another metric is introduced, which is tardiness, defined as $T_j = max(L_j, 0)$. The unit penalty of a job is defined as $U_j = e_j > d_j$, and it can be zero or one. Earliness of a job is defined as $E_j = max(d_j - e_j, 0)$.
 
-The table \ref{tab:objective_functions_table} shows some objective functions, along with their formulas. All of these functions can be implemented using the data presented in chapter \ref{sec:evaluation_data}. This means that the evaluation model of the hierarchial topology representation fully covers the evaluation of the machines and jobs scheduling model.
+The table \ref{tab:objective_functions_table} shows some objective functions, along with their formulas. All of these functions can be implemented using the data presented in chapter \ref{sec:evaluation_data}. This means that the evaluation model of the hierarchical topology representation fully covers the evaluation of the machines and jobs scheduling model.
 
 \begin{table}[!htbp]
     \begin{center}
@@ -40,7 +40,7 @@ The table \ref{tab:objective_functions_table} shows some objective functions, al
          \hline
          Total weighted tardiness & $ \sum_{j} w_j T_j $ \\ 
          \hline
-         Weighter number of tardy jobs & $ \sum_{j} w_j U_j $ \\ 
+         Weighted number of tardy jobs & $ \sum_{j} w_j U_j $ \\ 
          \hline
          Total earliness plus total tardiness & $ \sum_{j} E_j + \sum_{j} T_j $ \\ 
          \hline
@@ -50,4 +50,4 @@ The table \ref{tab:objective_functions_table} shows some objective functions, al
     \label{tab:objective_functions_table}
     \end{table}
 
-In chapter \ref{sec:scheduling}, we have defined scheduling problems using the triplet $\alpha | \beta | \gamma$. Over the past three chapters, we have introduced the hierarchial topology representation, and we have shown that this representation can express any scheduling problem which can be expressed by this triplet. This proves that it is a versatile and expressive representation system. The question that is left to answer is how this representation can be used to solve scheduling problems, and this question will be answered in the following chapters.
+In chapter \ref{sec:scheduling}, we have defined scheduling problems using the triplet $\alpha | \beta | \gamma$. Over the past three chapters, we have introduced the hierarchical topology representation, and we have shown that this representation can express any scheduling problem which can be expressed by this triplet. This proves that it is a versatile and expressive representation system. The question that is left to answer is how this representation can be used to solve scheduling problems, and this question will be answered in the following chapters.
