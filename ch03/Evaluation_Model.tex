@@ -5,11 +5,11 @@ In this chapter, we will describe the third and the final component of the hiera
 
 \section{Evaluation data}
 \label{sec:evaluation_data}
-When the simulation is running, the simulator will occasionally update the data about jobs. The characteristics which are available to the objective function are the job's release time, due time and weight. When the processing for a job finished, the simulator will also update the exit time for a job. These four parameters are used in most of the objective functions.
+When the simulation is running, the simulator will occasionally update the data about jobs. The characteristics which are available to the objective function are the job's release time, due time and weight. When the processing for a job is finished, the simulator will also update the exit time for a job. These four parameters are used in most of the objective functions.
 
 Another useful parameter which was not specified in the scheduling model, but which is natural for this representation is the job status upon simulation end. If the job reaches a sink node in its DAG, then it finishes processing normally, and the request was fulfilled. If the job does not reach a sink node in its DAG, but it still leaves the system, that means that a \textit{System exit forced} event was triggered, and that the request was not fulfilled. 
 
-The third option is that a job does not finish its processing, and instead remains stuck in come component's buffer. This can happen if the job is waiting for a prerequisite that cannot be fulfilled. In that case, all events will be consumed, and there will nothing left to change the job's state.
+The third option is that a job does not finish its processing, and instead remains stuck in some component's buffer. This can happen if the job is waiting for a prerequisite that cannot be fulfilled. In that case, all events will be consumed, and there will nothing left to change the job's state.
 
 To summarize, the five parameters for an objective function are the job's release time, due time, exit time, weight and status, which can be successfully terminated, unsuccessfully terminated and unterminated. All the objective functions use a combination of these parameters to produce a result for a job, and an aggregation of results for all jobs is used to produce the final score for the schedule.
 
@@ -34,7 +34,7 @@ The table \ref{tab:objective_functions_table} shows some objective functions, al
          \hline
          Maximum lateness & $  max(L_1, L_2, ..., L_n) $ \\ 
          \hline
-         Total weighed completion time & $ \sum_{j} w_j e_j $ \\ 
+         Total weighted completion time & $ \sum_{j} w_j e_j $ \\ 
          \hline
          Discounted total weighted completion time, $ 0 < r < 1$ & $ \sum_{j} w_j (1 - e^{-r e_j}) $ \\ 
          \hline

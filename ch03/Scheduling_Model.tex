@@ -92,7 +92,7 @@ For machines, a creation operator constructs a random permutation of all steps w
 For parallel group nodes, a combination operator takes the genetic material from one of the parents. For open group nodes and machines, any combination operator for a permutation representation can be used, and several are described in \citep{cicirello2023ecta} as \textit{crossover operators}.
 
 \subsection{Offline scheduling genotype - perturbation operator}
-For parallel group nodes, a perturbation operator works in the same way as a creation operator - it randomly chooses on of the group's components. For open group nodes and machines, any perturbation operator for a permutation representation can be used, and several are described in \citep{cicirello2023ecta} as \textit{mutation operators}.
+For parallel group nodes, a perturbation operator works in the same way as a creation operator - it randomly chooses one of the group's components. For open group nodes and machines, any perturbation operator for a permutation representation can be used, and several are described in \citep{cicirello2023ecta} as \textit{mutation operators}.
 
 \subsection{Offline scheduling genotype - neighborhood operator}
 For simple representations, a complete and exhaustive neighborhood operator can be constructed. One such representation is a binary vector representation, which consists of $n$ numbers, each one being $0$ or $1$. A neighborhood operator could flip the value at each position, and thus produce $n$ neighbors.
@@ -212,7 +212,7 @@ In offline scheduling, all scheduling decisions were made in advance. For each j
 
 When a job is processed on a parallel machine, the scheduler needs to determine which machine the job will be processed on next. In offline scheduling, this decision is made by reading the genotype. In online scheduling, this decision is made by manipulating some features to determine the best branch of the parallel machine to enter. This problem can be framed as a classification problem. In that case, each parallel machine would have a classifier which would determine the most suitable branch.
 
-Things get a bit more complicated when we consider online scheduling for open groups. Defining this problem as a classification problem does not make sense, because for each job, the branches of the group to select from could be different. Let's imagine that a job has $m$ components of the open group to go through. When it first arrives at the group, it is the scheduler's decision to choose which of these $m$ components the job will go through first. When the job finished with the first component, the scheduler needs to decide which of the remaining $m-1$ components the job will go through next. After that, the scheduler needs to choose one of the $m-2$ components, and this goes all the way until the job goes through all the components. So, the order of components for a job is not determined at one moment, and instead, it is constructed part by part, at different moments of the simulation.
+Things get a bit more complicated when we consider online scheduling for open groups. Defining this problem as a classification problem does not make sense, because for each job, the branches of the group to select from could be different. Let's imagine that a job has $m$ components of the open group to go through. When it first arrives at the group, it is the scheduler's decision to choose which of these $m$ components the job will go through first. When the job finishes with the first component, the scheduler needs to decide which of the remaining $m-1$ components the job will go through next. After that, the scheduler needs to choose one of the $m-2$ components, and this goes all the way until the job goes through all the components. So, the order of components for a job is not determined at one moment, and instead, it is constructed part by part, at different moments of the simulation.
 
 Since framing the problem as a classification problem does not make sense for open groups, for the sake of uniformity, we will frame the problem for both parallel and open groups as a regression problem. In parallel groups, using some features, the scheduler will assign a score to each branch. The branch with the highest score is the one that the job will go through. The same applies for open groups - any time that a scheduler needs to choose which of the $k$ components a job will go through next, it will calculate a score for each of them, and the job will go through the one with the highest score. The goal of the regression algorithm is to determine how good a component of a group is, and in both the cases of parallel and open groups, the best component is chosen.
 
@@ -223,7 +223,7 @@ When a scheduler needs to decide which of the jobs in the machine's buffer it wi
 \section{Online scheduling features}
 \label{sec:online_scheduling_features}
 
-In chapter \ref{sec:online_scheduling_genotype_components}, we presented components of an online scheduling genotype. In offline scheduling, the genotype consists of three different categories - parallel groups, open groups and machines. In online scheduling, the genotype is more elegant. Every element of the topology which requires some form of scheduling has a regression algorithm, and the outputs of this algorithm are interpreted according to the element rules. In this chapter, we will define the features that the regression algorithms will have at their disposal to calculate the score of a job or a branch.
+In chapter \ref{sec:online_scheduling_genotype_components}, we have presented components of an online scheduling genotype. In offline scheduling, the genotype consists of three different categories - parallel groups, open groups and machines. In online scheduling, the genotype is more elegant. Every element of the topology which requires some form of scheduling has a regression algorithm, and the outputs of this algorithm are interpreted according to the element rules. In this chapter, we will define the features that the regression algorithms will have at their disposal to calculate the score of a job or a branch.
 
 \subsection{Processing routes features}
 
@@ -274,7 +274,7 @@ However, in this thesis, we will not explore these concepts further, and will in
 \section{Online scheduling algorithm cluster}
 \label{sec:online_scheduling_algorithm_cluster}
 
-As we discussed earlier in this chapter, each element of the topology which requires some scheduling decisions will have a regression algorithm assigned to it. We will refer to the collection of these algorithms as the \textit{online scheduling algorithm cluster}, and a single regression algorithm will be referred to as \textit{online scheduling algorithm}.
+As we discussed earlier in this chapter, each element of the topology which requires some scheduling decisions will have a regression algorithm assigned to it. We will refer to the collection of these algorithms as the \textit{online scheduling algorithm cluster}, and a single regression algorithm will be referred to as an \textit{online scheduling algorithm}.
 
 The online scheduling algorithm cluster is the genotype for an online scheduling problem. In this chapter, we will go over its operators.
 
@@ -288,7 +288,7 @@ The creation operator for an online scheduling algorithm cluster involves creati
 The combination operator for an online scheduling algorithm cluster involves executing the combination operator of the online scheduling algorithm once per topology elements unlocked by the topology partitioner, and for the topology elements which are locked by the topology partitioner, the approach which was described in chapter \ref{sec:topology_partitioning} is used, with the distinction of coarse and fine granularity combination operators.
 
 \subsection{Online scheduling algorithm cluster - perturbation operator}
-The perturbation perturbation operator for an online scheduling algorithm cluster involves executing the perturbation operator of the online scheduling algorithm once per topology elements unlocked by the topology partitioners, while the remaining elements are left intact.
+The perturbation operator for an online scheduling algorithm cluster involves executing the perturbation operator of the online scheduling algorithm once per topology elements unlocked by the topology partitioners, while the remaining elements are left intact.
 
 \section{Online scheduling algorithms}
 \label{sec:online_scheduling_algorithms}

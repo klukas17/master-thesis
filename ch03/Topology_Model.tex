@@ -11,13 +11,13 @@ The leaves in the tree are machines. Each machine has its buffer which contains 
 
 The inner nodes in the tree are groups. Every group has at least one child component, and these components can be either machines or groups. This simple recursive rule allows building of arbitrarily complex systems of machines. Throughout the remainder of this thesis, we will refer to a system of machines and its inner connections as a topology. 
 
-To reiterate, topologies correspond to tree structures. Another data structure which is very important for this system is directed acyclic graphs (DAGs). DAGs are used to store the possible paths which a job can take when going through the topology.
+To reiterate, topologies correspond to tree structures. Another data structure which is very important for this system is directed acyclic graphs (DAGs). DAGs are used to store the possible paths which a job can take when going through a topology.
 
-Every group can be thought of as an abstract machine. When a job enters the group, it will be processed on it, the same as it would be on a machine, but this processing will be instant and then the job will be directed to the next component on its path. There are several types of groups. 
+Every group can be thought of as an abstract machine. When a job enters a group, it will be processed on it, the same as it would be on a machine, but this processing will be instant and then the job will be directed to the next component on its path. There are several types of groups. 
 
 \subsection{Serial group}
 
-The first group type is the serial group. The components of this group are ordered. When a job enters this group, it is directed to its first component, and then second, all the way to the last one. Figure \ref{fig:serial_group} shows a serial group topology on the left, and the corresponding paths DAG on the right. Serial group nodes are named S, while machines are named M.
+The first group type is the serial group. The components of this group are ordered. When a job enters this group, it is directed to its first component, and then second, all the way to the last one. Figure \ref{fig:serial_group} shows a serial group topology on the left, and the corresponding paths DAG on the right. Serial group nodes are named $S$, while machines are named $M$.
 
 \begin{figure}[!htbp]
 	\centering
@@ -28,7 +28,7 @@ The first group type is the serial group. The components of this group are order
 
 \subsection{Parallel group}
 
-The second group type is parallel group. This group performs a branching over its components. When a job enters this group, it is directed to one of its components, and the job will only be processed in that component. Figure \ref{fig:parallel_group} shows a parallel group topology on the left, and the corresponding paths DAG on the right. Parallel group nodes are named P.
+The second group type is parallel group. This group performs a branching over its components. When a job enters this group, it is directed to one of its components, and the job will only be processed in that component. Figure \ref{fig:parallel_group} shows a parallel group topology on the left, and the corresponding paths DAG on the right. Parallel group nodes are named $P$.
 
 \begin{figure}[!htbp]
 	\centering
@@ -39,7 +39,7 @@ The second group type is parallel group. This group performs a branching over it
 
 \subsection{Route group}
 
-The third group type is route group. In this group, each job has a predefined route through the components of the group, and this route can differ from job to job. When a job enters this group, it is directed to the first component on its route, and then second, all the way to the last one. Figure \ref{fig:route_group} shows a route group topology on the left, and several possible paths DAGs on the right. Paths can go through all components in any order, they can contain only a subset of components, the components can be repeated in the paths, and they can even contain no components. Route group nodes are named R.
+The third group type is route group. In this group, each job has a predefined route through the components of the group, and this route can differ from job to job. When a job enters this group, it is directed to the first component on its route, and then second, all the way to the last one. Figure \ref{fig:route_group} shows a route group topology on the left, and several possible paths DAGs on the right. Paths can go through all components in any order, they can contain only a subset of components, the components can be repeated in the paths, and they can even contain no components. Route group nodes are named $R$.
 
 \begin{figure}[!htbp]
 	\centering
@@ -50,7 +50,7 @@ The third group type is route group. In this group, each job has a predefined ro
 
 \subsection{Open group}
 
-The fourth and the last group type is open group. In this group, each job contains a multiset of components of the group, and the job has to be processed in each component of the multiset, but it is up to the scheduler to determine the order of processing. All the same rules for paths in the route group apply here - a path can contain all components, it can contain some components, components can be repeated, and it can contain no components. Figure \ref{fig:open_group} shows an open group topology on the left, and several possible paths DAGs on the right. Open group nodes are named O. The DAG notation is expanded here to be able to represent open groups. In each path, all the components of open groups are connected to it by dashed lines. When the job arrives at an open group node, it has to go through all its components in any order, and then it proceeds to the next node in the path.
+The fourth and the last group type is open group. In this group, each job contains a multiset of components of the group, and the job has to be processed in each component of the multiset, but it is up to the scheduler to determine the order of processing. All the same rules for paths in the route group apply here - a path can contain all components, it can contain some components, components can be repeated, and it can contain no components. Figure \ref{fig:open_group} shows an open group topology on the left, and several possible paths DAGs on the right. Open group nodes are named $O$. The DAG notation is expanded here to be able to represent open groups. In each path, all the components of open groups are connected to it by dashed lines. When a job arrives at an open group node, it has to go through all its components in any order, and then it proceeds to the next node in the path.
 
 \begin{figure}[!htbp]
 	\centering

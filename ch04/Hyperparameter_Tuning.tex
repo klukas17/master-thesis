@@ -13,7 +13,7 @@ For the topology partitioner scheme, the number $k$ is calculated as the mathema
             \hline
             topology partitioner scheme & all, 1 beginning, 1 end, 1 fair random, 1 true random, k beginning, k end, k fair random, k true random, random path \\
             \hline
-            random path topology enumerator change element chance & 0.5, 0.6, 0.7, 0.8, 0.9 \\
+            random path topology partitioner change element chance & 0.5, 0.6, 0.7, 0.8, 0.9 \\
             \hline
             optimization algorithm & SSGA, GGA, ES, SIA, CLONALG \\
             \hline
@@ -298,7 +298,7 @@ While most of the hyperparameters were transferred from the tuning process direc
 
 The hyperparameters were tuned for each algorithm separately. This could not be solved using an exhaustive method such as the grid search, as there are too many possible hyperparameter configurations for each algorithm. Instead, the problem was framed as an optimization problem, and the algorithm which was used for optimization was SSGA. A similar approach, used for tuning hyperparameters for machine learning models, can be found in \citep{hyperopti}.
 
-The genotype for this problem was the mapping from hyperparameters to their values. The evaluation function would take these hyperparameters and try to solve the problem of creating a good online scheduling system. In other words, the evaluation function was the execution of the scheduling meta-algorithm. The creation operator would generate a random value for each hyperparameter. The combination operator would, for each hyperparameter, randomly choose one of the two parents and copy its value for the hyperparameter. The perturbation operator would randomly select some hyperparameters and change their values. The hyperparameters of the SSGA used for tuning hyperparameters were the following - population size was $10$, number of evaluations of the evaluation function was $200$, and the perturbation rate was $0.2$.
+The genotype for this problem was the mapping from hyperparameters to their values. The evaluation function would take these hyperparameters and try to solve the problem of creating a good online scheduling system. In other words, the evaluation function was the execution of the scheduling meta-algorithm, with the given hyperparameters. The creation operator would generate a random value for each hyperparameter. The combination operator would, for each hyperparameter, randomly choose one of the two parents and copy its value for the hyperparameter. The perturbation operator would randomly select some hyperparameters and change their values. The hyperparameters of the SSGA used for tuning hyperparameters were the following - population size was $10$, number of evaluations of the evaluation function was $200$, and the perturbation rate was $0.2$.
 
 Results of the hyperparameter tuning for online scheduling algorithms are shown in the following tables - NN in table \ref{tab:hyper_nn_results}, 
 TBGP in table \ref{tab:hyper_tbgp_results}, CGP in table \ref{tab:hyper_cgp_results}, GBGP in table \ref{tab:hyper_gbgp_results}, SBGP in table \ref{tab:hyper_sbgp_results}, LGP in table \ref{tab:hyper_lgp_results}, MEP in table \ref{tab:hyper_mep_results}, GEP in table \ref{tab:hyper_gep_results}, GE in table \ref{tab:hyper_ge_results} and SGE in table \ref{tab:hyper_sge_results}.
@@ -313,7 +313,7 @@ TBGP in table \ref{tab:hyper_tbgp_results}, CGP in table \ref{tab:hyper_cgp_resu
         \hline
         topology partitioner scheme & k true random \\
         \hline
-        random path topology enumerator change element chance & 0.6 \\
+        random path topology partitioner change element chance & 0.6 \\
         \hline
         optimization algorithm & SIA \\
         \hline
@@ -373,7 +373,7 @@ TBGP in table \ref{tab:hyper_tbgp_results}, CGP in table \ref{tab:hyper_cgp_resu
         \hline
         topology partitioner scheme & k true random \\
         \hline
-        random path topology enumerator change element chance & 0.5 \\
+        random path topology partitioner change element chance & 0.5 \\
         \hline
         optimization algorithm & SSGA \\
         \hline
@@ -431,7 +431,7 @@ TBGP in table \ref{tab:hyper_tbgp_results}, CGP in table \ref{tab:hyper_cgp_resu
         \hline
         topology partitioner scheme & all \\
         \hline
-        random path topology enumerator change element chance & 0.6 \\
+        random path topology partitioner change element chance & 0.6 \\
         \hline
         optimization algorithm & SSGA \\
         \hline
@@ -489,7 +489,7 @@ TBGP in table \ref{tab:hyper_tbgp_results}, CGP in table \ref{tab:hyper_cgp_resu
         \hline
         topology partitioner scheme & random path \\
         \hline
-        random path topology enumerator change element chance & 0.8 \\
+        random path topology partitioner change element chance & 0.8 \\
         \hline
         optimization algorithm & SSGA \\
         \hline
@@ -553,7 +553,7 @@ TBGP in table \ref{tab:hyper_tbgp_results}, CGP in table \ref{tab:hyper_cgp_resu
         \hline
         topology partitioner scheme & random path \\
         \hline
-        random path topology enumerator change element chance & 0.9 \\
+        random path topology partitioner change element chance & 0.9 \\
         \hline
         optimization algorithm & ES \\
         \hline
@@ -617,7 +617,7 @@ TBGP in table \ref{tab:hyper_tbgp_results}, CGP in table \ref{tab:hyper_cgp_resu
         \hline
         topology partitioner scheme & random path \\
         \hline
-        random path topology enumerator change element chance & 0.9 \\
+        random path topology partitioner change element chance & 0.9 \\
         \hline
         optimization algorithm & ES \\
         \hline
@@ -681,7 +681,7 @@ TBGP in table \ref{tab:hyper_tbgp_results}, CGP in table \ref{tab:hyper_cgp_resu
         \hline
         topology partitioner scheme & k fair random \\
         \hline
-        random path topology enumerator change element chance & 0.6 \\
+        random path topology partitioner change element chance & 0.6 \\
         \hline
         optimization algorithm & ES \\
         \hline
@@ -737,7 +737,7 @@ TBGP in table \ref{tab:hyper_tbgp_results}, CGP in table \ref{tab:hyper_cgp_resu
         \hline
         topology partitioner scheme & k true random \\
         \hline
-        random path topology enumerator change element chance & 0.5\\
+        random path topology partitioner change element chance & 0.5\\
         \hline
         optimization algorithm & GGA \\
         \hline
@@ -799,7 +799,7 @@ TBGP in table \ref{tab:hyper_tbgp_results}, CGP in table \ref{tab:hyper_cgp_resu
         \hline
         topology partitioner scheme & k fair random \\
         \hline
-        random path topology enumerator change element chance & 0.6 \\
+        random path topology partitioner change element chance & 0.6 \\
         \hline
         optimization algorithm & CLONALG \\
         \hline
@@ -857,7 +857,7 @@ TBGP in table \ref{tab:hyper_tbgp_results}, CGP in table \ref{tab:hyper_cgp_resu
         \hline
         topology partitioner scheme & k fair random \\
         \hline
-        random path topology enumerator change element chance & 0.5 \\
+        random path topology partitioner change element chance & 0.5 \\
         \hline
         optimization algorithm & SSGA \\
         \hline

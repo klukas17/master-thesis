@@ -122,7 +122,7 @@ An advantage of separating the genotype definition from the genotype operators d
 \subsection{Perturbation operator}
 \label{sec:perturbation_operator}
 
-The next component is the perturbation operator. This operator takes a genotype as an argument, and returns one genotype as a result. It can be considered as a special case of a neighborhood operator where the length of the resulting neighborhood is always equal to one, these operators are distinguished for two reasons. The first reason is that the neighborhood operators are usually used in iterative search algorithms, while the perturbation operators are used in evolutionary algorithms, where the operator is more frequently called a mutation operator. The second reason is that the neighborhood operators are expected to apply less severe changes to the argument genotype than the perturbation operators. 
+The next component is the perturbation operator. This operator takes a genotype as an argument, and returns one genotype as a result. While it can be considered as a special case of a neighborhood operator where the length of the resulting neighborhood is always equal to one, these operators are distinguished for two reasons. The first reason is that the neighborhood operators are usually used in iterative search algorithms, while the perturbation operators are used in evolutionary algorithms, where the operator is more frequently called a mutation operator. The second reason is that the neighborhood operators are expected to apply less severe changes to the argument genotype than the perturbation operators. 
 
 The idea behind a perturbation operator is that takes a genotype and changes it more or less severely. These operators can be used to effectively escape local optima.
 
@@ -324,7 +324,6 @@ The hyperparameters for the algorithm are the population size, $\beta$, $\gamma$
             \For{$number\_of\_perturbations \gets 1$ \KwTo $\lceil \frac{\lambda \times i}{population\_size} \rceil$}{
                 $x \gets perturbation\_operator.perturbate(x)$\;
             }
-            $x \gets perturbation\_operator.perturbate(x)$\;
             $s \gets evaluation\_function.evaluate(x)$\;
             $new\_population.insert((x, s))$\;
         }
